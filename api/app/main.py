@@ -214,7 +214,7 @@ def get_scheme(slug: str, lang: str | None = None) -> dict | None:
     # Overlay translated fields if lang requested and translation exists
     if lang and lang != "en":
         cur.execute(
-            "SELECT scheme_name, short_title, description, eligibility_text, benefit_text "
+            "SELECT scheme_name, short_title, description, eligibility_text, benefit_text, how_to_apply "
             "FROM scheme_translations WHERE scheme_id = %s AND lang_code = %s",
             (scheme["id"], lang),
         )
@@ -228,6 +228,7 @@ def get_scheme(slug: str, lang: str | None = None) -> dict | None:
                 scheme["_description_translated"] = True
             scheme["eligibility_text_translated"] = tr.get("eligibility_text") or ""
             scheme["benefit_text_translated"]     = tr.get("benefit_text") or ""
+            scheme["how_to_apply_translated"]     = tr.get("how_to_apply") or ""
     cur.close(); conn.close()
 
     # Parse documents_required_md into a clean list (prefer over old jsonb)
@@ -262,10 +263,36 @@ def _build_guide_from_scheme(scheme: dict) -> dict | None:
     import re as _re
     guide: dict = {}
 
-    # how_to_apply: parse "Step N: ..." inline text (MyScheme data is all on one line)
+    # how_to_apply: prefer translated text, fall back to English source
+    translated_hta = (scheme.get("how_to_apply_translated") or "").strip()
     raw = (scheme.get("how_to_apply_english") or "").strip()
-    if raw:
-        # Split only on "Step N:" prefix (not bare digit patterns inside URLs etc.)
+
+    def _parse_numbered_steps(text: str) -> list[dict]:
+        """Parse numbered steps (newline-separated OR inline) into [{title, detail}]."""
+        # Strip docs section (after double newline)
+        text = text.split("\n\n")[0].strip()
+        # If steps are inline ("1. foo. 2. bar."), split on number boundary
+        if _re.search(r"\d+\.\s+.+\d+\.", text):
+            parts = _re.split(r"(?=\d+\.\s)", text)
+        else:
+            parts = text.splitlines()
+        steps = []
+        for part in parts:
+            part = part.strip()
+            if not part:
+                continue
+            m = _re.match(r"^(\d+)[.)]\s*(.*)", part, _re.DOTALL)
+            if m:
+                steps.append({"title": str(m.group(1)), "detail": m.group(2).strip()})
+            elif steps:
+                steps[-1]["detail"] = (steps[-1]["detail"] + " " + part).strip()
+        return steps
+
+    if translated_hta:
+        steps = _parse_numbered_steps(translated_hta)
+        guide["how_to_apply"] = steps if steps else [{"title": "1", "detail": translated_hta[:300]}]
+    elif raw:
+        # English: "Step N: ..." format from MyScheme
         parts = _re.split(r"(?=Step\s+\d+[.:)]\s)", raw, flags=_re.IGNORECASE)
         steps = []
         for part in parts:
@@ -275,7 +302,7 @@ def _build_guide_from_scheme(scheme: dict) -> dict | None:
             m = _re.match(r"^Step\s+(\d+)[.:)]\s*(.*)", part, _re.IGNORECASE | _re.DOTALL)
             if m:
                 detail = m.group(2).strip()
-                detail = _re.sub(r"\.\s*$", "", detail)  # strip trailing sentence period
+                detail = _re.sub(r"\.\s*$", "", detail)
                 if detail:
                     steps.append({"title": f"Step {m.group(1)}", "detail": detail})
             elif steps:
@@ -304,6 +331,19 @@ def _build_guide_from_scheme(scheme: dict) -> dict | None:
         guide["common_mistakes"] = mistakes
 
     return guide if guide else None
+
+
+def _inject_translated_guide(guide: dict | None, scheme: dict, lang: str) -> dict | None:
+    """Override guide.how_to_apply with DB translation when available (non-hi/en langs)."""
+    if lang in ("en", "hi") or not scheme.get("how_to_apply_translated"):
+        return guide
+    translated = _build_guide_from_scheme(scheme)
+    if translated and translated.get("how_to_apply"):
+        if guide is None:
+            guide = {}
+        guide = dict(guide)
+        guide["how_to_apply"] = translated["how_to_apply"]
+    return guide
 
 
 def get_eligible_schemes(
@@ -650,6 +690,7 @@ async def scheme_detail(request: Request, lang: str, slug: str):
     related = [s for s in related if s["slug"] != slug][:3]
     guide_file = DATA_DIR / "guides" / f"{slug}.json"
     guide = json.loads(guide_file.read_text()) if guide_file.exists() else _build_guide_from_scheme(scheme)
+    guide = _inject_translated_guide(guide, scheme, lang)
     return templates.TemplateResponse(request, "scheme_detail.html", ctx(request, lang,
         scheme=scheme, related=related, guide=guide))
 

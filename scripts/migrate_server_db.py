@@ -363,16 +363,87 @@ ON CONFLICT (scheme_id, lang_code) DO NOTHING;""")
     print(f"  Done. {total_inserted} translation rows synced.", flush=True)
 
 
+# ── Step 5: Sync how_to_apply column ───────────────────────────────────────
+
+def step5_sync_how_to_apply():
+    print("\n== Step 5: Sync scheme_translations.how_to_apply ==", flush=True)
+
+    # Ensure column exists on server
+    ssh_run("ALTER TABLE scheme_translations ADD COLUMN IF NOT EXISTS how_to_apply TEXT;")
+    print("  Column ensured on server.", flush=True)
+
+    # Pull all local (slug, lang_code, how_to_apply) where how_to_apply is set
+    conn = psycopg2.connect(dbname=LOCAL_DB)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT s.slug, t.lang_code, t.how_to_apply
+        FROM scheme_translations t
+        JOIN schemes s ON s.id = t.scheme_id
+        WHERE t.how_to_apply IS NOT NULL AND t.how_to_apply != ''
+        ORDER BY s.slug, t.lang_code
+    """)
+    rows = cur.fetchall()
+    cur.close(); conn.close()
+
+    print(f"  Local rows with how_to_apply: {len(rows)}", flush=True)
+    if not rows:
+        print("  Nothing to sync.", flush=True)
+        return
+
+    def _esc(v):
+        if v is None: return "NULL"
+        return "'" + str(v).replace("'", "''") + "'"
+
+    BATCH = 500
+    total_done = 0
+    for i in range(0, len(rows), BATCH):
+        batch = [dict(r) for r in rows[i : i + BATCH]]
+        sql_lines = ["BEGIN;"]
+        for d in batch:
+            slug = d["slug"].replace("'", "''")
+            lang = d["lang_code"].replace("'", "''")
+            sql_lines.append(f"""
+UPDATE scheme_translations t SET how_to_apply = {_esc(d['how_to_apply'])}
+FROM schemes s
+WHERE s.id = t.scheme_id AND s.slug = '{slug}' AND t.lang_code = '{lang}';""")
+        sql_lines.append("COMMIT;")
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".sql", delete=False, encoding="utf-8") as f:
+            f.write("\n".join(sql_lines))
+            tmpfile = f.name
+
+        rc, out = ssh_pipe_sql(tmpfile)
+        os.unlink(tmpfile)
+        if rc == 0:
+            total_done += len(batch)
+            print(f"  Batch {i//BATCH+1}: {len(batch)} rows updated  [total {total_done}]", flush=True)
+        else:
+            print(f"  Batch error rc={rc}: {out[:200]}", flush=True)
+            break
+
+    print(f"  Done. {total_done} how_to_apply rows synced.", flush=True)
+
+
 # ── Main ────────────────────────────────────────────────────────────────────
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--only-how-to-apply", action="store_true",
+                    help="Skip steps 1-4 and only sync how_to_apply column")
+    args = ap.parse_args()
+
     print("=== Aarambha Haq DB Migration (local → server) ===", flush=True)
     t0 = time.time()
 
-    step1_alter_table()
-    step2_missing_schemes()
-    step3_update_new_cols()
-    step4_sync_translations()
+    if args.only_how_to_apply:
+        step5_sync_how_to_apply()
+    else:
+        step1_alter_table()
+        step2_missing_schemes()
+        step3_update_new_cols()
+        step4_sync_translations()
+        step5_sync_how_to_apply()
 
     print(f"\n=== Done in {time.time()-t0:.0f}s ===", flush=True)
 
