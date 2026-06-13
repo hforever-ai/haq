@@ -1,0 +1,45 @@
+{
+  "how_to_apply": [
+    {
+      "step": 1,
+      "title": "पात्रता की जांच करें",
+      "detail": "सुनिश्चित करें कि आपका संगठन 'Scheme to Provide Financial Assistance to Registered Organizations/Government Organization/Non-Government Organizations/Institutions for Running Residential Facilities/Half Way Homes for Persons with Disabilities' के तहत पंजीकृत है।"
+    },
+    {
+      "step": 2,
+      "title": "दस्तावेज तैयार करें",
+      "detail": "आधार कार्ड, गोवा का निवास प्रमाण पत्र (Residence Proof), और संगठन का आय प्रमाण पत्र (Income Certificate) तैयार रखें।"
+    },
+    {
+      "step": 3,
+      "title": "आवेदन फॉर्म प्राप्त करें",
+      "detail": "गोवा सरकार के समाज कल्याण विभाग (Department of Social Welfare) की आधिकारिक वेबसाइट पर जाएं या संबंधित जिला कार्यालय से आवेदन पत्र प्राप्त करें।"
+    },
+    {
+      "step": 4,
+      "title": "आवेदन जमा करें",
+      "detail": "पूर्ण रूप से भरे हुए आवेदन पत्र को सभी आवश्यक दस्तावेजों के साथ संबंधित जिला समाज कल्याण अधिकारी के कार्यालय में जमा करें।"
+    },
+    {
+      "step": 5,
+      "title": "सत्यापन और स्वीकृति",
+      "detail": "विभाग द्वारा आपके दस्तावेजों और सुविधाओं का भौतिक सत्यापन किया जाएगा, जिसके बाद अनुदान की राशि सीधे संगठन के बैंक खाते में जारी की जाएगी।"
+    }
+  ],
+  "use_case": {
+    "name": "राजेश",
+    "age": 30,
+    "occupation": "एनजीओ समन्वयक",
+    "state": "गोवा",
+    "story": "राजेश ने पणजी में विकलांग व्यक्तियों के लिए एक छोटा आवासीय केंद्र शुरू किया था। उन्होंने 'Scheme to Provide Financial Assistance to Registered Organizations/Government Organization/Non-Government Organizations/Institutions for Running Residential Facilities/Half Way Homes for Persons with Disabilities' के बारे में जिला कल्याण कार्यालय से जाना। आवेदन प्रक्रिया पूरी करने के बाद, उन्हें अपने केंद्र के संचालन के लिए ₹5 लाख का वार्षिक अनुदान प्राप्त हुआ, जिससे वे बेहतर सुविधाएं दे पा रहे हैं।"
+  },
+  "tips": [
+    "आवेदन जमा करने से पहले अपने संगठन का पंजीकरण प्रमाण पत्र (Registration Certificate) अनिवार्य रूप से अपडेट रखें।",
+    "सभी दस्तावेजों की स्व-सत्यापित (Self-attested) प्रतियां साथ रखें ताकि कार्यालय में समय बर्बाद न हो।",
+    "अनुदान के उपयोग का उचित लेखा-जोखा (Audit Report) रखें, क्योंकि भविष्य में नवीनीकरण के लिए इसकी आवश्यकता होगी।"
+  ],
+  "common_mistakes": [
+    "अपूर्ण दस्तावेज जमा करना, जिसके कारण आवेदन सीधे खारिज हो जाता है।",
+    "निवास प्रमाण पत्र में गोवा का पता स्पष्ट न होना, जिससे पात्रता सिद्ध करने में समस्या आती है।"
+  ]
+}

@@ -1,0 +1,134 @@
+[
+  {
+    "code": "hi",
+    "name": "Hindi",
+    "script": "Devanagari",
+    "native": "हिन्दी"
+  },
+  {
+    "code": "mr",
+    "name": "Marathi",
+    "script": "Devanagari",
+    "native": "मराठी"
+  },
+  {
+    "code": "ne",
+    "name": "Nepali",
+    "script": "Devanagari",
+    "native": "नेपाली"
+  },
+  {
+    "code": "mai",
+    "name": "Maithili",
+    "script": "Devanagari",
+    "native": "मैथिली"
+  },
+  {
+    "code": "sa",
+    "name": "Sanskrit",
+    "script": "Devanagari",
+    "native": "संस्कृतम्"
+  },
+  {
+    "code": "doi",
+    "name": "Dogri",
+    "script": "Devanagari",
+    "native": "डोगरी"
+  },
+  {
+    "code": "kok",
+    "name": "Konkani",
+    "script": "Devanagari",
+    "native": "कोंकणी"
+  },
+  {
+    "code": "bn",
+    "name": "Bengali",
+    "script": "Bengali",
+    "native": "বাংলা"
+  },
+  {
+    "code": "as",
+    "name": "Assamese",
+    "script": "Bengali",
+    "native": "অসমীয়া"
+  },
+  {
+    "code": "gu",
+    "name": "Gujarati",
+    "script": "Gujarati",
+    "native": "ગુજરાતી"
+  },
+  {
+    "code": "pa",
+    "name": "Punjabi",
+    "script": "Gurmukhi",
+    "native": "ਪੰਜਾਬੀ"
+  },
+  {
+    "code": "or",
+    "name": "Odia",
+    "script": "Odia",
+    "native": "ଓଡ଼ିଆ"
+  },
+  {
+    "code": "ta",
+    "name": "Tamil",
+    "script": "Tamil",
+    "native": "தமிழ்"
+  },
+  {
+    "code": "te",
+    "name": "Telugu",
+    "script": "Telugu",
+    "native": "తెలుగు"
+  },
+  {
+    "code": "kn",
+    "name": "Kannada",
+    "script": "Kannada",
+    "native": "ಕನ್ನಡ"
+  },
+  {
+    "code": "ml",
+    "name": "Malayalam",
+    "script": "Malayalam",
+    "native": "മലയാളം"
+  },
+  {
+    "code": "ur",
+    "name": "Urdu",
+    "script": "Nastaliq",
+    "native": "اردو"
+  },
+  {
+    "code": "ks",
+    "name": "Kashmiri",
+    "script": "Nastaliq",
+    "native": "کٲشُر"
+  },
+  {
+    "code": "sd",
+    "name": "Sindhi",
+    "script": "Perso-Arabic",
+    "native": "سنڌي"
+  },
+  {
+    "code": "mni",
+    "name": "Manipuri",
+    "script": "Meitei Mayek",
+    "native": "মৈতৈলোন্"
+  },
+  {
+    "code": "brx",
+    "name": "Bodo",
+    "script": "Devanagari",
+    "native": "बड़ो"
+  },
+  {
+    "code": "sat",
+    "name": "Santali",
+    "script": "Ol Chiki",
+    "native": "ᱥᱟᱱᱛᱟᱲᱤ"
+  }
+]

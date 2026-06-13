@@ -1,0 +1,25 @@
+{
+  "name": "aarambha-haq-bot",
+  "version": "1.0.0",
+  "description": "Aarambha Haq Telegram Bot",
+  "main": "dist/bot.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/bot.js",
+    "dev": "ts-node src/bot.ts"
+  },
+  "dependencies": {
+    "telegraf": "^4.16.3",
+    "fuse.js": "^7.0.0",
+    "didyoumean2": "^7.0.4",
+    "nspell": "^2.1.5",
+    "dictionary-en": "^4.0.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/nspell": "^2.1.4",
+    "typescript": "^5",
+    "ts-node": "^10"
+  }
+}

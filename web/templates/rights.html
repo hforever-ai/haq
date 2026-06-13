@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}आपके अधिकार — Aarambha Haq{% endblock %}
+
+{% block content %}
+
+<!-- ── Page Hero ── -->
+<section class="page-hero-band" aria-label="Your rights">
+  <div class="wrap page-hero-inner">
+    <nav class="page-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ lp }}/">होम</a> <span aria-hidden="true">›</span>
+      <span>आपके अधिकार</span>
+    </nav>
+    <h1 class="page-hero-h1">आपके अधिकार</h1>
+    <p class="page-hero-sub">भारत के संविधान और कानूनों के तहत आपके मौलिक और कानूनी अधिकार</p>
+  </div>
+</section>
+
+<!-- ── Category Filters ── -->
+<div class="rights-filter-wrap">
+  <div class="wrap">
+    <div class="rights-filter-bar">
+      <a href="{{ lp }}/haq" class="rights-pill {% if not active_category %}active{% endif %}">सभी अधिकार</a>
+      {% for cat in categories %}
+      <a href="{{ lp }}/haq?category={{ cat.slug }}" class="rights-pill {% if active_category == cat.slug %}active{% endif %}">
+        {{ cat.icon }} {{ cat.label }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ── Search ── -->
+<div class="wrap" style="padding-top:var(--s5)">
+  <form class="rights-search-form" action="{{ lp }}/haq" method="get" role="search">
+    {% if active_category %}
+    <input type="hidden" name="category" value="{{ active_category }}">
+    {% endif %}
+    <input name="q" type="search" value="{{ q }}"
+           placeholder="अधिकार खोजें... जैसे: तलाक, संपत्ति, पेंशन"
+           autocomplete="off">
+    <button type="submit">
+      <svg width="17" height="17" fill="none" viewBox="0 0 18 18" aria-hidden="true">
+        <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 12l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </form>
+</div>
+
+<!-- ── Articles ── -->
+<div class="section">
+  <div class="wrap" style="max-width:800px">
+
+    {% if articles %}
+
+      {% if active_category or q %}
+      <!-- Filtered view: flat list -->
+      <p class="rights-meta">{{ articles | length }} अधिकार मिले{% if q %} — "{{ q }}"{% endif %}</p>
+      <div class="rights-list">
+        {% for a in articles %}
+        {% include "_rights_card.html" ignore missing %}
+        <div class="rights-card">
+          {% set cat_info = categories_map.get(a.category, {}) %}
+          {% if cat_info %}
+          <span class="rights-cat-tag">{{ cat_info.icon }} {{ cat_info.label }}</span>
+          {% endif %}
+          <h3 class="rights-card-title">{{ a.title_hi }}</h3>
+          <p class="rights-card-summary">{{ a.summary_hi }}</p>
+          {% if a.detail_hi %}
+          <details class="rights-details">
+            <summary>पूरी जानकारी देखें <span aria-hidden="true">▾</span></summary>
+            <div class="rights-detail-body">{{ a.detail_hi | safe }}</div>
+          </details>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      <!-- All categories: grouped view -->
+      {% for cat in categories %}
+        {% set group = grouped.get(cat.slug, []) %}
+        {% if group %}
+        <div class="rights-group">
+          <div class="rights-group-header">
+            <span class="rights-group-icon">{{ cat.icon }}</span>
+            <h2 class="rights-group-title">{{ cat.label }}</h2>
+            <a href="{{ lp }}/haq?category={{ cat.slug }}" class="rights-group-more">सभी देखें →</a>
+          </div>
+          <div class="rights-list">
+            {% for a in group %}
+            <div class="rights-card">
+              <h3 class="rights-card-title">{{ a.title_hi }}</h3>
+              <p class="rights-card-summary">{{ a.summary_hi }}</p>
+              {% if a.detail_hi %}
+              <details class="rights-details">
+                <summary>पूरी जानकारी देखें <span aria-hidden="true">▾</span></summary>
+                <div class="rights-detail-body">{{ a.detail_hi | safe }}</div>
+              </details>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+      {% endif %}
+
+    {% else %}
+    <div class="text-center" style="padding:var(--s12) 0;color:var(--ink-2)">
+      <div style="font-size:48px;margin-bottom:var(--s4)">🔍</div>
+      <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:var(--s2)">कोई अधिकार नहीं मिला</h3>
+      <a href="{{ lp }}/haq" class="btn btn-outline" style="margin-top:var(--s4)">सभी अधिकार देखें</a>
+    </div>
+    {% endif %}
+
+    <!-- Emergency helplines -->
+    <div class="tips-box" style="margin-top:var(--s10)">
+      <h4 style="font-size:15px;font-weight:800;color:var(--navy);margin-bottom:var(--s4)">📞 आपातकालीन हेल्पलाइन</h4>
+      <div class="helplines-grid">
+        <a href="tel:112" class="helpline-card"><span class="hl-label">पुलिस</span><span class="hl-num">112</span></a>
+        <a href="tel:181" class="helpline-card"><span class="hl-label">महिला हेल्पलाइन</span><span class="hl-num">181</span></a>
+        <a href="tel:15100" class="helpline-card"><span class="hl-label">कानूनी सहायता (NALSA)</span><span class="hl-num">15100</span></a>
+        <a href="tel:1098" class="helpline-card"><span class="hl-label">चाइल्ड हेल्पलाइन</span><span class="hl-num">1098</span></a>
+        <a href="tel:108" class="helpline-card"><span class="hl-label">एम्बुलेंस</span><span class="hl-num">108</span></a>
+        <a href="tel:1930" class="helpline-card"><span class="hl-label">साइबर क्राइम</span><span class="hl-num">1930</span></a>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:var(--navy);border-radius:16px;padding:var(--s7);text-align:center;margin-top:var(--s8)">
+      <h3 style="color:#fff;margin-bottom:var(--s2)">अपनी पात्र योजनाएं जानें</h3>
+      <p style="color:rgba(255,255,255,.6);font-size:14px;margin-bottom:var(--s5)">
+        5 सवालों में जानें आप कौन-कौन सी सरकारी योजनाओं के लिए पात्र हैं
+      </p>
+      <a href="{{ lp }}/check" class="btn btn-saffron" style="height:46px;padding:0 28px;font-size:15px">पात्रता जांचें →</a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

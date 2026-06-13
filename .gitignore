@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+dist/
+build/
+
+# Secrets & config
+.env
+*.env
+config.local.*
+
+# Data / DB dumps (large)
+data/guides/
+data/*.json
+data/*.jsonl
+*.sql
+*.dump
+*.db
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/

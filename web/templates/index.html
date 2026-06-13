@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('hero.headline') }} — Aarambha Haq{% endblock %}
+{% block description %}भारत की 2,754+ सरकारी योजनाओं के लिए मुफ़्त पात्रता जाँच — महिला, किसान, छात्र, रोजगार, स्वास्थ्य। 22 भारतीय भाषाओं में, कोई पंजीकरण नहीं।{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Aarambha Haq","url":"https://haq.aarambhax.in","description":"Free government scheme eligibility checker for India — 2,754+ schemes in 22 languages","potentialAction":{"@type":"SearchAction","target":"https://haq.aarambhax.in{{ lp }}/yojana?q={search_term}","query-input":"required name=search_term"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Aarambha Haq क्या है?","acceptedAnswer":{"@type":"Answer","text":"Aarambha Haq एक निःशुल्क ऑनलाइन सेवा है जो 2,754+ सरकारी योजनाओं की जानकारी 25 भाषाओं में देती है।"}},
+  {"@type":"Question","name":"पात्रता जाँच में कितना समय लगता है?","acceptedAnswer":{"@type":"Answer","text":"केवल 2 मिनट — 7 आसान सवालों के जवाब दें।"}},
+  {"@type":"Question","name":"क्या यह बिल्कुल मुफ्त है?","acceptedAnswer":{"@type":"Answer","text":"हाँ, पूरी तरह निःशुल्क, कोई रजिस्ट्रेशन नहीं।"}},
+  {"@type":"Question","name":"केंद्रीय और राज्य योजना में क्या फर्क है?","acceptedAnswer":{"@type":"Answer","text":"केंद्रीय योजनाएं पूरे देश में लागू होती हैं। राज्य योजनाएं केवल उस राज्य के लिए।"}}
+]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HOME HERO — text-only with Ashoka Chakra watermark
+═══════════════════════════════════════════════════════════════ -->
+<section class="home-hero" aria-label="Homepage hero">
+  <div class="wrap home-hero-content">
+
+    <!-- Eyebrow with mini-flag -->
+    <div class="home-hero-eyebrow">
+      <svg width="22" height="15" viewBox="0 0 22 15" aria-hidden="true" style="flex-shrink:0;border-radius:2px">
+        <rect width="22" height="5" fill="#FF9933"/>
+        <rect y="5" width="22" height="5" fill="#f9f9f9"/>
+        <rect y="10" width="22" height="5" fill="#138808"/>
+        <circle cx="11" cy="7.5" r="1.5" stroke="#000080" stroke-width=".9" fill="none"/>
+      </svg>
+      {{ t('hero.badge') }}
+    </div>
+
+    <!-- Main heading -->
+    <h1 class="home-hero-h1">{{ t('hero.headline') }}</h1>
+    <p class="home-hero-sub">{{ t('hero.sub') }}</p>
+
+    <!-- Big search bar -->
+    <form class="home-hero-search" action="{{ lp }}/yojana" method="get" role="search">
+      <input name="q" type="search"
+             placeholder="{{ t('browse.search_placeholder') }}"
+             aria-label="{{ t('browse.search_placeholder') }}"
+             autocomplete="off">
+      <button type="submit">
+        <svg width="18" height="18" fill="none" viewBox="0 0 18 18" aria-hidden="true">
+          <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 12l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        खोजें
+      </button>
+    </form>
+
+    <!-- Category quick-chips -->
+    <div class="hero-cat-chips" role="list" aria-label="Category shortcuts">
+      {% for slug, key in [
+        ('mahila','cat.women'), ('student','cat.student'), ('farmer','cat.farmer'),
+        ('employment','cat.employment'), ('health','cat.health'),
+        ('housing','cat.housing'), ('disability','cat.disability'), ('pension','cat.pension'),
+      ] %}
+      <a href="{{ lp }}/yojana/{{ slug }}" class="hero-cat-chip" role="listitem">{{ t(key) }}</a>
+      {% endfor %}
+    </div>
+
+    <!-- CTA buttons -->
+    <div class="hero-cta-row">
+      <a href="{{ lp }}/check" class="btn btn-primary hero-main-cta">
+        {{ t('hero.cta') }}
+        <svg width="14" height="14" fill="none" viewBox="0 0 14 14" aria-hidden="true">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a href="{{ lp }}/yojana" class="btn hero-browse-cta">{{ t('nav.all_schemes') }} →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TRUST BADGE STRIP
+═══════════════════════════════════════════════════════════════ -->
+<div class="trust-strip" role="list" aria-label="Trust indicators">
+  <div class="wrap trust-strip-inner">
+    <div class="trust-badge" role="listitem">
+      <span class="icon" aria-hidden="true">✔</span>
+      डेटा स्रोत: <a href="https://www.myscheme.gov.in" target="_blank" rel="noopener" style="color:var(--navy);font-weight:700">MyScheme.gov.in</a>
+    </div>
+    <div class="trust-badge-div" aria-hidden="true"></div>
+    <div class="trust-badge" role="listitem">
+      <span class="icon" aria-hidden="true">🔒</span>
+      कोई पंजीकरण नहीं, कोई डेटा संग्रह नहीं
+    </div>
+    <div class="trust-badge-div" aria-hidden="true"></div>
+    <div class="trust-badge" role="listitem">
+      <span class="icon" aria-hidden="true">₹</span>
+      हमेशा निःशुल्क
+    </div>
+    <div class="trust-badge-div" aria-hidden="true"></div>
+    <div class="trust-badge" role="listitem">
+      <span class="icon" aria-hidden="true">A</span>
+      22 भारतीय भाषाएं
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATS ORANGE PATTI
+═══════════════════════════════════════════════════════════════ -->
+<div class="stats-patti" role="list" aria-label="Key statistics">
+  <div class="wrap stats-patti-inner">
+    <div class="stats-patti-item" role="listitem">
+      <div class="stats-patti-n">2,754+</div>
+      <div class="stats-patti-lbl">योजनाएं</div>
+    </div>
+    <div class="stats-patti-div" aria-hidden="true"></div>
+    <div class="stats-patti-item" role="listitem">
+      <div class="stats-patti-n">22</div>
+      <div class="stats-patti-lbl">भारतीय भाषाएं</div>
+    </div>
+    <div class="stats-patti-div" aria-hidden="true"></div>
+    <div class="stats-patti-item" role="listitem">
+      <div class="stats-patti-n">36</div>
+      <div class="stats-patti-lbl">राज्य + UTs</div>
+    </div>
+    <div class="stats-patti-div" aria-hidden="true"></div>
+    <div class="stats-patti-item" role="listitem">
+      <div class="stats-patti-n">₹0</div>
+      <div class="stats-patti-lbl">हमेशा निःशुल्क</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CATEGORY GRID
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" aria-labelledby="cat-heading">
+  <div class="wrap">
+    <div class="sh">
+      <div>
+        <div class="section-label">{{ t('hero.badge') }}</div>
+        <h2 id="cat-heading">{{ t('nav.all_schemes') }}</h2>
+      </div>
+      <a href="{{ lp }}/yojana">सभी 2,754 योजनाएं →</a>
+    </div>
+
+    {# Per-category inline SVG icons — no emoji, brand-safe #}
+    {% set cat_icons = {
+      'mahila':       '<circle cx="10" cy="6" r="3.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M4 18c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>',
+      'student':      '<path d="M3 8l7-5 7 5-7 4-7-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M6 10.5V14c0 1.65 1.79 3 4 3s4-1.35 4-3v-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="17" y1="8" x2="17" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      'farmer':       '<path d="M10 18V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 13c0-3-3.5-4-3.5-4s-.5 4 3.5 4z" fill="currentColor"/><path d="M10 13c0-3 3.5-4 3.5-4s.5 4-3.5 4z" fill="currentColor"/><path d="M10 9c0-2-2-3-2-3s-.3 3 2 3z" fill="currentColor"/><path d="M10 9c0-2 2-3 2-3s.3 3-2 3z" fill="currentColor"/>',
+      'employment':   '<rect x="2" y="8" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7 8V7a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="2" y1="13" x2="18" y2="13" stroke="currentColor" stroke-width="1" opacity=".5"/>',
+      'disability':   '<circle cx="10" cy="4.5" r="2" fill="currentColor"/><path d="M8 9.5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 9.5v4.5l-2.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 14l2.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      'pension':      '<circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7.5 8.5h4a1.5 1.5 0 010 3H8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="8.5" y1="11.5" x2="8.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      'health':       '<circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 6.5v7M6.5 10h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+      'child':        '<circle cx="10" cy="6" r="2.5" fill="currentColor"/><path d="M5.5 12h9l1.5 6h-12l1.5-6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>',
+      'tribal':       '<path d="M10 2L5.5 9h9L10 2z" fill="currentColor"/><path d="M10 6L4 14h12L10 6z" fill="currentColor" opacity=".75"/><rect x="9" y="14" width="2" height="4" fill="currentColor"/>',
+      'bpl':          '<path d="M2 9.5L10 3l8 6.5v7.5a1 1 0 01-1 1H3a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><rect x="7" y="13" width="6" height="5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>',
+      'entrepreneur': '<path d="M10 2.5a5 5 0 013.8 8.2c-.4.6-.8 1.2-.8 1.8H7c0-.6-.4-1.2-.8-1.8A5 5 0 0110 2.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><line x1="7" y1="15" x2="13" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="17.5" x2="12" y2="17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      'minority':     '<path d="M14 10a6 6 0 11-6-6 4 4 0 006 6z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="14.5" cy="4.5" r="1.5" fill="currentColor"/>',
+      'housing':      '<path d="M2 9.5L10 3l8 6.5v7.5a1 1 0 01-1 1H3a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M7.5 18V14h5v4" stroke="currentColor" stroke-width="1.5" fill="none"/>',
+      'maternity':    '<circle cx="8.5" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M4 18v-3.5a4.5 4.5 0 019 0V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="15" cy="13" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/>',
+      'elderly':      '<circle cx="10" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7 10h6v4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M13 14.5l2 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 10l-2 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    } %}
+
+    {% set cats = [
+      ('mahila',       'cat.women',       381,  '#FF9933'),
+      ('student',      'cat.student',     748,  '#0B1F4D'),
+      ('farmer',       'cat.farmer',      400,  '#138808'),
+      ('employment',   'cat.employment',  459,  '#0B1F4D'),
+      ('disability',   'cat.disability',  289,  '#6B48D0'),
+      ('pension',      'cat.pension',     259,  '#C87941'),
+      ('health',       'cat.health',      184,  '#E74C3C'),
+      ('child',        'cat.child',       182,  '#FF9933'),
+      ('tribal',       'cat.tribal',      157,  '#138808'),
+      ('bpl',          'cat.bpl',         141,  '#5B6678'),
+      ('entrepreneur', 'cat.entrepreneur',121,  '#0B1F4D'),
+      ('minority',     'cat.minority',    87,   '#2980B9'),
+      ('housing',      'cat.housing',     69,   '#C87941'),
+      ('maternity',    'cat.maternity',   40,   '#E056A0'),
+      ('elderly',      'cat.elderly',     24,   '#5B6678'),
+    ] %}
+
+    <div class="cat-grid">
+      {% for slug, key, count, color in cats %}
+      <a href="{{ lp }}/yojana/{{ slug }}" class="cat-tile"
+         aria-label="{{ t(key) }} — {{ count }} योजनाएं">
+        <div class="cat-icon-wrap" style="background:{{ color }}18;border:1px solid {{ color }}28">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none"
+               style="color:{{ color }}" aria-hidden="true">
+            {{ cat_icons.get(slug, '') | safe }}
+          </svg>
+        </div>
+        <h4>{{ t(key) }}</h4>
+        <span class="cnt">{{ count }} योजनाएं</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════════════════════════ -->
+<section style="background:var(--navy-tint);padding:clamp(var(--s10),6vw,64px) 0" aria-labelledby="how-heading">
+  <div class="wrap">
+    <div class="section-label text-center">{{ t('how.title') }}</div>
+    <h2 id="how-heading" class="text-center" style="margin-bottom:var(--s8)">{{ t('how.title') }}</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <h4>{{ t('how.step1') }}</h4>
+        <p>{{ t('wizard.q1') }}</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <h4>{{ t('how.step2') }}</h4>
+        <p>{{ t('how.step2_desc') }}</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <h4>{{ t('how.step3') }}</h4>
+        <p>{{ t('general.official_site') }}</p>
+      </div>
+    </div>
+    <div class="text-center" style="margin-top:var(--s8)">
+      <a href="{{ lp }}/check" class="btn btn-primary btn-lg">{{ t('hero.cta') }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATS STRIP
+═══════════════════════════════════════════════════════════════ -->
+<section style="background:var(--navy);padding:clamp(var(--s6),4vw,var(--s10)) 0">
+  <div class="wrap">
+    <div class="stat-grid">
+      <div class="stat-box" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08)">
+        <div class="n">2,754</div>
+        <div class="lbl" style="color:rgba(255,255,255,.55)">{{ t('trust.schemes_count') }}</div>
+      </div>
+      <div class="stat-box" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08)">
+        <div class="n">22</div>
+        <div class="lbl" style="color:rgba(255,255,255,.55)">{{ t('trust.languages') }}</div>
+      </div>
+      <div class="stat-box" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08)">
+        <div class="n">15</div>
+        <div class="lbl" style="color:rgba(255,255,255,.55)">{{ t('browse.categories') }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     POPULAR SCHEMES
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" aria-labelledby="schemes-heading">
+  <div class="wrap">
+    <div class="sh">
+      <div>
+        <div class="section-label">{{ t('trust.govt_data') }}</div>
+        <h2 id="schemes-heading">{{ t('nav.all_schemes') }}</h2>
+      </div>
+      <a href="{{ lp }}/yojana">सभी देखें →</a>
+    </div>
+
+    <div class="scheme-grid">
+      {% for s in popular_schemes %}
+      <article class="scheme-card">
+        <div class="scheme-card-top">
+          <span class="badge {{ 'badge-central' if s.level == 'Central' else 'badge-state' }}">
+            {{ t('general.central_scheme') if s.level == 'Central' else t('general.state_scheme') }}
+          </span>
+          {% if s.state and s.state != 'All' %}
+          <span class="badge badge-muted" style="font-size:10px">{{ s.state }}</span>
+          {% endif %}
+        </div>
+        <h3>{{ s.name }}</h3>
+        <p class="desc">{{ (s.description or '')[:160] }}{% if (s.description or '')|length > 160 %}…{% endif %}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          {% for bt in (s.beneficiary_type or [])[:2] %}
+          <span class="badge badge-navy" style="font-size:10px">{{ t('cat.' + bt) }}</span>
+          {% endfor %}
+        </div>
+        <div class="scheme-card-footer">
+          <a href="{{ lp }}/yojana/s/{{ s.slug }}" class="btn btn-primary btn-sm">{{ t('scheme.view') }}</a>
+          {% if s.apply_url %}
+          <a href="{{ s.apply_url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">
+            {{ t('general.official_site') }}
+            <svg width="10" height="10" fill="none" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 8.5l7-7M8.5 1.5H3.5M8.5 1.5v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </a>
+          {% endif %}
+        </div>
+      </article>
+      {% else %}
+      {% for i in range(6) %}
+      <div class="scheme-card" aria-hidden="true">
+        <div class="sk" style="height:16px;width:60%;margin-bottom:var(--s3)"></div>
+        <div class="sk" style="height:14px;width:100%;margin-bottom:var(--s2)"></div>
+        <div class="sk" style="height:14px;width:80%"></div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+
+    <div class="text-center" style="margin-top:var(--s8)">
+      <a href="{{ lp }}/yojana" class="btn btn-outline btn-lg">2,754 योजनाएं देखें</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FAQ (Gemini-generated, multilingual)
+═══════════════════════════════════════════════════════════════ -->
+{% if home_faqs %}
+<section class="faq-section faq-section-alt" aria-labelledby="faq-heading">
+  <div class="wrap">
+    <h2 class="faq-heading" id="faq-heading">{{ t('faq.title') or 'अक्सर पूछे जाने वाले सवाल' }}</h2>
+    <p class="faq-sub">{{ t('faq.sub') or 'सरकारी योजनाओं और इस प्लेटफ़ॉर्म के बारे में जरूरी जानकारी' }}</p>
+    <div class="faq-list">
+      {% for item in home_faqs %}
+      <details class="faq-item">
+        <summary>{{ item.q }}</summary>
+        <div class="faq-a"><p>{{ item.a }}</p></div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section class="faq-section faq-section-alt" aria-labelledby="faq-heading">
+  <div class="wrap">
+    <h2 class="faq-heading" id="faq-heading">अक्सर पूछे जाने वाले सवाल</h2>
+    <p class="faq-sub">सरकारी योजनाओं और इस प्लेटफ़ॉर्म के बारे में जरूरी जानकारी</p>
+    <div class="faq-list">
+
+      <details class="faq-item">
+        <summary>Aarambha Haq क्या है?</summary>
+        <div class="faq-a">
+          <p>Aarambha Haq एक निःशुल्क ऑनलाइन सेवा है जो भारत के नागरिकों को उनके लिए उपलब्ध सरकारी योजनाओं की जानकारी देती है। हमारा डेटाबेस में 2,754+ केंद्रीय और राज्य सरकार की योजनाएं हैं।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>पात्रता जाँच करने में कितना समय लगता है?</summary>
+        <div class="faq-a">
+          <p>केवल 2 मिनट। 7 आसान सवालों के जवाब दें — जैसे आपका राज्य, उम्र, लिंग और आय। हम तुरंत आपके लिए उपयुक्त योजनाएं दिखाते हैं।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>क्या यह सेवा बिल्कुल मुफ्त है?</summary>
+        <div class="faq-a">
+          <p>हाँ, पूरी तरह निःशुल्क है। कोई रजिस्ट्रेशन नहीं, कोई शुल्क नहीं, कोई विज्ञापन नहीं। Aarambha Haq का उद्देश्य है कि हर नागरिक तक सरकारी योजनाओं की जानकारी पहुँचे।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>मेरी निजी जानकारी कहाँ जाती है?</summary>
+        <div class="faq-a">
+          <p>आपकी जानकारी हमारे सर्वर पर सेव नहीं होती। पात्रता जाँच पूरी तरह आपके ब्राउज़र में होती है। हम कोई डेटा संग्रह नहीं करते।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>केंद्रीय और राज्य योजना में क्या फर्क है?</summary>
+        <div class="faq-a">
+          <p><strong>केंद्रीय योजनाएं</strong> — भारत सरकार द्वारा चलाई जाती हैं और पूरे देश में लागू होती हैं। जैसे PM-KISAN, Ayushman Bharat, PM Awas Yojana।</p>
+          <p><strong>राज्य योजनाएं</strong> — अपने-अपने राज्य की सरकारें चलाती हैं और केवल उस राज्य के निवासियों के लिए होती हैं।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>योजना का लाभ कैसे मिलता है?</summary>
+        <div class="faq-a">
+          <p>हर योजना के पेज पर "आवेदन करें" बटन है जो सरकारी पोर्टल पर ले जाता है। अधिकांश योजनाओं के लिए आप:</p>
+          <ul>
+            <li>CSC (Common Service Centre) पर जाकर आवेदन कर सकते हैं</li>
+            <li>MyScheme.gov.in पर ऑनलाइन आवेदन कर सकते हैं</li>
+            <li>संबंधित विभाग के कार्यालय में जा सकते हैं</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>यह जानकारी कितनी भरोसेमंद है?</summary>
+        <div class="faq-a">
+          <p>हमारा डेटा भारत सरकार के आधिकारिक पोर्टल <a href="https://www.myscheme.gov.in" target="_blank" rel="noopener">MyScheme.gov.in</a> से लिया गया है। योजनाओं की शर्तें समय-समय पर बदल सकती हैं, इसलिए आवेदन से पहले संबंधित विभाग से पुष्टि करें।</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CTA STRIP
+═══════════════════════════════════════════════════════════════ -->
+<section style="background:linear-gradient(135deg,var(--saffron) 0%,#EF7A12 100%);padding:clamp(var(--s6),4vw,var(--s10)) 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--s5)">
+    <div>
+      <h2 style="color:var(--navy);margin-bottom:var(--s2);font-size:clamp(18px,2.5vw,28px)">{{ t('hero.cta') }}</h2>
+      <p style="color:rgba(11,31,77,.7);font-size:clamp(13px,1.2vw + 3px,16px);margin:0">{{ t('hero.sub') }}</p>
+    </div>
+    <a href="{{ lp }}/check" class="btn btn-navy btn-lg" style="flex-shrink:0">
+      {{ t('hero.cta') }}
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </a>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,634 @@
+{
+  "detail_page": [
+    {
+      "section_name": "Hero: Scheme Overview & Call to Action",
+      "fields": [
+        "name",
+        "short_title",
+        "level",
+        "state",
+        "benefit_type",
+        "implementing_agency",
+        "apply_url",
+        "is_dbt",
+        "scheme_image_url"
+      ],
+      "display_logic": "Always",
+      "ui_component": "Banner with large name, short title, level/state/benefit type/DBT badges, implementing agency name, prominent 'Apply Now' button. Scheme image as background or alongside if available.",
+      "priority": "High",
+      "notes": "First impression. Clear name, concise value, immediate call to action. Badges for quick scan."
+    },
+    {
+      "section_name": "What is this scheme about?",
+      "fields": [
+        "detailed_description_md",
+        "description"
+      ],
+      "display_logic": "Always (use `detailed_description_md` if available, fallback to `description`)",
+      "ui_component": "Rich text/markdown block. Use simple language and clear headings.",
+      "priority": "High",
+      "notes": "Answers the fundamental 'what' and 'why'. Crucial for understanding."
+    },
+    {
+      "section_name": "Who can benefit? (Eligibility)",
+      "fields": [
+        "eligibility_md",
+        "beneficiary_type",
+        "genders",
+        "age_min",
+        "age_max",
+        "income_limit_annual_inr",
+        "max_income_lakhs",
+        "caste_categories",
+        "for_married",
+        "for_widow",
+        "for_pregnant",
+        "for_shg",
+        "for_girl_child",
+        "for_sc_st",
+        "for_minority",
+        "disability_required"
+      ],
+      "display_logic": "Always",
+      "ui_component": "Combination of prominent bullet points/chips for key criteria (e.g., 'Age 18-60', 'For Women', 'SC/ST'), followed by detailed markdown `eligibility_md`. Potentially a mini 'check your eligibility' widget.",
+      "priority": "High",
+      "notes": "Most critical section for users to self-identify if they qualify. Simplify complex rules."
+    },
+    {
+      "section_name": "What will I get? (Benefits)",
+      "fields": [
+        "benefits_md",
+        "benefit_amount_inr",
+        "benefit_amount_percent",
+        "benefit_type"
+      ],
+      "display_logic": "Always",
+      "ui_component": "Clear headings for each benefit, use `benefits_md` for rich details. Display `benefit_amount_inr` or `benefit_amount_percent` prominently with currency/percentage. Visual icons for benefit types.",
+      "priority": "High",
+      "notes": "Directly addresses the user's primary motivation. Use simple, direct language for amounts and types."
+    },
+    {
+      "section_name": "How to Apply",
+      "fields": [
+        "how_to_apply",
+        "application_process_md",
+        "apply_url"
+      ],
+      "display_logic": "Always. If `how_to_apply` (guide) exists, use its structure. Else, use `application_process_md`. Always show `apply_url`.",
+      "ui_component": "Step-by-step visual flow (numbered cards or infographic) if `how_to_apply` guide exists. Otherwise, a clear, numbered list from `application_process_md`. Prominent 'Apply Now' button (`apply_url`) at the end.",
+      "priority": "High",
+      "notes": "Simplify the application process into actionable, easy-to-follow steps. Crucial for low-literacy users."
+    },
+    {
+      "section_name": "What documents do I need?",
+      "fields": [
+        "documents_required_md"
+      ],
+      "display_logic": "Only if `documents_required_md` is not empty.",
+      "ui_component": "Simple bullet list. Consider icons for common documents (Aadhar, Photo).",
+      "priority": "Medium",
+      "notes": "Helps users prepare before starting the application, reducing frustration."
+    },
+    {
+      "section_name": "Common Questions (FAQs)",
+      "fields": [
+        "faqs"
+      ],
+      "display_logic": "Only if `faqs` array is not empty.",
+      "ui_component": "Accordion/collapsible list for each Q&A pair.",
+      "priority": "Medium",
+      "notes": "Addresses typical user concerns, reduces support queries. Questions and answers should be very simple."
+    },
+    {
+      "section_name": "Real-Life Story",
+      "fields": [
+        "use_case"
+      ],
+      "display_logic": "Only if `use_case` (Hindi guide) exists (will use generated English version).",
+      "ui_component": "Testimonial card with beneficiary `name`, `age`, `occupation`, `state`, and `story`. Use a warm, inviting design.",
+      "priority": "Medium",
+      "notes": "Builds trust and provides relatable context, inspiring potential beneficiaries. Will need to be generated/translated."
+    },
+    {
+      "section_name": "Tips & Mistakes to Avoid",
+      "fields": [
+        "tips",
+        "common_mistakes"
+      ],
+      "display_logic": "Only if `tips` or `common_mistakes` (Hindi guide) exist (will use generated English versions).",
+      "ui_component": "Two distinct bulleted lists, potentially with encouraging/cautionary icons. Clearly labelled.",
+      "priority": "Medium",
+      "notes": "Practical advice to ensure successful application and avoid common pitfalls. Will need to be generated/translated."
+    },
+    {
+      "section_name": "Exclusions",
+      "fields": [
+        "exclusions_md"
+      ],
+      "display_logic": "Only if `exclusions_md` is not empty.",
+      "ui_component": "Rich text/markdown block, clearly titled.",
+      "priority": "Low",
+      "notes": "Important for clarity, explicitly stating who cannot apply. Could be integrated into Eligibility but keep separate due to distinct data field."
+    },
+    {
+      "section_name": "More Scheme Details & References",
+      "fields": [
+        "category[]",
+        "tags[]",
+        "ministry",
+        "nodal_department",
+        "references_json"
+      ],
+      "display_logic": "Always",
+      "ui_component": "Collapsible section or 'More Info' tab. List `category[]` and `tags[]` as chips. List `ministry`, `nodal_department` as key-value pairs. Display `references_json` as clickable links with titles.",
+      "priority": "Low",
+      "notes": "For users seeking deeper information or official sources. Essential for transparency and trust. Include data attribution."
+    }
+  ],
+  "content_gaps": [
+    {
+      "field_name": "how_to_apply_english",
+      "source_fields": [
+        "guides.how_to_apply",
+        "application_process_md",
+        "apply_url"
+      ],
+      "prompt_hint": "Translate the Hindi `how_to_apply` steps into simple, actionable English. If Hindi is missing, extract step-by-step instructions from `application_process_md`. Focus on clarity for low-literacy users, using direct verbs. Include any relevant URLs from `apply_url` within steps.",
+      "why_valuable": "Crucial for non-Hindi speaking users to understand application process before full 22-language translation. Improves accessibility and reduces application barriers."
+    },
+    {
+      "field_name": "use_case_english",
+      "source_fields": [
+        "guides.use_case",
+        "name",
+        "short_title",
+        "description",
+        "beneficiary_type[]",
+        "category[]",
+        "state"
+      ],
+      "prompt_hint": "Translate the Hindi `use_case` story into simple English (50-100 words). If Hindi is missing, generate a short, relatable real-life success story of a beneficiary, including their `name` (generic, e.g., 'Ramesh from Uttar Pradesh'), `age`, `occupation`, and `state`, demonstrating how they benefited from the scheme. Focus on the scheme's main purpose and impact.",
+      "why_valuable": "Builds trust and helps users visualize the impact and relevance of the scheme in their own lives. Emotional connection is powerful."
+    },
+    {
+      "field_name": "tips_english",
+      "source_fields": [
+        "guides.tips",
+        "detailed_description_md",
+        "eligibility_md",
+        "documents_required_md",
+        "application_process_md"
+      ],
+      "prompt_hint": "Translate the Hindi `tips` into simple English. If Hindi is missing, generate 3-5 practical, easy-to-understand tips for successfully applying for or benefiting from this scheme, based on its `eligibility_md`, `documents_required_md`, and `application_process_md`.",
+      "why_valuable": "Provides actionable guidance, improving the chances of a successful application and maximizing benefits for the user."
+    },
+    {
+      "field_name": "common_mistakes_english",
+      "source_fields": [
+        "guides.common_mistakes",
+        "eligibility_md",
+        "documents_required_md",
+        "application_process_md",
+        "exclusions_md"
+      ],
+      "prompt_hint": "Translate the Hindi `common_mistakes` into simple English. If Hindi is missing, generate 3-5 common mistakes applicants might make when applying for this scheme and clear advice on how to avoid them. Draw from `eligibility_md`, `documents_required_md`, `application_process_md`, and `exclusions_md`.",
+      "why_valuable": "Prevents frustration, saves time, and reduces application rejections by proactively addressing potential errors."
+    },
+    {
+      "field_name": "short_summary_bullet_points",
+      "source_fields": [
+        "name",
+        "short_title",
+        "description",
+        "detailed_description_md",
+        "benefits_md",
+        "eligibility_md"
+      ],
+      "prompt_hint": "Generate 3-4 ultra-short bullet points (5-10 words each) summarizing the scheme's main purpose, key eligibility, and primary benefit. Use extremely simple vocabulary suitable for a low-literacy audience.",
+      "why_valuable": "Improves scannability and quick comprehension for users browsing lists or seeking quick answers. Excellent for meta descriptions and quick insights on scheme cards."
+    },
+    {
+      "field_name": "key_eligibility_questions",
+      "source_fields": [
+        "eligibility_md",
+        "genders",
+        "age_min",
+        "age_max",
+        "income_limit_annual_inr",
+        "max_income_lakhs",
+        "caste_categories",
+        "for_sc_st",
+        "for_minority",
+        "disability_required",
+        "for_married",
+        "for_widow",
+        "for_pregnant",
+        "for_shg",
+        "for_girl_child"
+      ],
+      "prompt_hint": "Generate 3-5 simple 'Yes/No' questions from the scheme's primary eligibility criteria. Prioritize criteria that are easy to answer and exclude a large number of ineligible users quickly (e.g., 'Are you a woman?', 'Is your age between X and Y?', 'Do you belong to a Scheduled Caste or Tribe?').",
+      "why_valuable": "Enhances the 'Who can benefit?' section with an interactive element, making self-assessment faster and more intuitive for low-literacy users."
+    }
+  ],
+  "home_page": [
+    {
+      "section_name": "Find Schemes for You (Enhanced)",
+      "data_sources": [
+        "category[]",
+        "level",
+        "state",
+        "beneficiary_type[]",
+        "genders[]",
+        "age_min",
+        "age_max",
+        "caste_categories[]"
+      ],
+      "ui_component": "Prominent search bar, followed by a 'Quick Eligibility Check' button that navigates to `/check` or opens a mini-form modal. Suggest popular search queries.",
+      "notes": "Main entry point; make search and eligibility checking highly visible and simple."
+    },
+    {
+      "section_name": "Popular Schemes",
+      "data_sources": [
+        "name",
+        "description",
+        "tags[]",
+        "apply_url",
+        "slug"
+      ],
+      "ui_component": "Horizontal carousel of scheme cards (using `scheme_card` spec) based on internal analytics or admin curation.",
+      "notes": "Helps users discover high-demand schemes easily. Keep descriptions brief and engaging."
+    },
+    {
+      "section_name": "New & Updated Schemes",
+      "data_sources": [
+        "name",
+        "description",
+        "tags[]",
+        "apply_url",
+        "slug",
+        "updated_at"
+      ],
+      "ui_component": "List or carousel of scheme cards. Requires a `created_at` or `updated_at` field in the database for tracking.",
+      "notes": "Keeps the portal feeling fresh and encourages repeat visits. Highlights recent changes or additions."
+    },
+    {
+      "section_name": "Schemes for Your State",
+      "data_sources": [
+        "name",
+        "description",
+        "tags[]",
+        "apply_url",
+        "slug",
+        "state",
+        "level"
+      ],
+      "ui_component": "Section displaying a selection of scheme cards (using `scheme_card` spec) filtered by user's detected/selected state (for `level='State'` and `level='Central'` schemes). Requires state detection or selection mechanism.",
+      "notes": "Personalizes the experience, making relevant schemes immediately visible. Critical for rural users."
+    },
+    {
+      "section_name": "Quick Links to Common Needs",
+      "data_sources": [
+        "category[]"
+      ],
+      "ui_component": "A few prominent buttons or illustrative cards for the top 3-5 most frequently accessed `category[]` pages (e.g., 'Farmers', 'Women', 'Students', 'Health').",
+      "notes": "Provides direct, visual access to high-demand categories, simplifying navigation for users with specific needs."
+    },
+    {
+      "section_name": "Explore All Categories",
+      "data_sources": [
+        "category[]"
+      ],
+      "ui_component": "Grid of all `category[]` cards with icons and short labels.",
+      "notes": "Comprehensive overview of all scheme classifications, aiding structured discovery."
+    }
+  ],
+  "browse_filters": [
+    {
+      "filter_name": "Category",
+      "field": "category[]",
+      "ui_component": "Multi-select checkboxes/chips or dropdown."
+    },
+    {
+      "filter_name": "State",
+      "field": "state",
+      "ui_component": "Dropdown with search functionality."
+    },
+    {
+      "filter_name": "Scheme Level",
+      "field": "level",
+      "ui_component": "Radio buttons (Central/State)."
+    },
+    {
+      "filter_name": "Beneficiary Type",
+      "field": "beneficiary_type[]",
+      "ui_component": "Multi-select checkboxes/chips."
+    },
+    {
+      "filter_name": "Gender",
+      "field": "genders[]",
+      "ui_component": "Multi-select checkboxes (Male, Female, All Genders, Other)."
+    },
+    {
+      "filter_name": "Age",
+      "field": "age_min, age_max",
+      "ui_component": "Dual-handle range slider with input fields (e.g., 'From Age', 'To Age')."
+    },
+    {
+      "filter_name": "Annual Income Limit",
+      "field": "income_limit_annual_inr, max_income_lakhs",
+      "ui_component": "Input field for 'Max Income (INR)' or range slider with common thresholds. For simplicity, 'Income less than X lakhs'."
+    },
+    {
+      "filter_name": "Caste Category",
+      "field": "caste_categories[]",
+      "ui_component": "Multi-select checkboxes/chips (SC, ST, OBC, General, Minority)."
+    },
+    {
+      "filter_name": "Benefit Type",
+      "field": "benefit_type",
+      "ui_component": "Multi-select checkboxes/chips (Cash, Scholarship, Loan, In-kind, Service)."
+    },
+    {
+      "filter_name": "Ministry / Department",
+      "field": "ministry",
+      "ui_component": "Dropdown with search functionality (potentially in a 'More Filters' section due to length)."
+    },
+    {
+      "filter_name": "Direct Benefit Transfer (DBT)",
+      "field": "is_dbt",
+      "ui_component": "Checkbox ('Show only DBT schemes')."
+    },
+    {
+      "filter_name": "Special Conditions",
+      "field": "for_married, for_widow, for_pregnant, for_shg, for_girl_child, for_sc_st, for_minority, disability_required",
+      "ui_component": "Grouped checkboxes under a 'Special Conditions' heading (e.g., 'For Married Individuals', 'For Widows', 'For Persons with Disabilities')."
+    }
+  ],
+  "search": {
+    "full_text_fields": [
+      {
+        "field": "name",
+        "priority": "Highest",
+        "strategy": "Exact match, partial match, typo tolerance"
+      },
+      {
+        "field": "short_title",
+        "priority": "Highest",
+        "strategy": "Exact match, partial match, typo tolerance"
+      },
+      {
+        "field": "slug",
+        "priority": "Highest",
+        "strategy": "Exact match"
+      },
+      {
+        "field": "description",
+        "priority": "High",
+        "strategy": "Full-text search, semantic relevance, synonym mapping"
+      },
+      {
+        "field": "detailed_description_md",
+        "priority": "High",
+        "strategy": "Full-text search, semantic relevance, synonym mapping"
+      },
+      {
+        "field": "eligibility_md",
+        "priority": "Medium",
+        "strategy": "Full-text search, keywords"
+      },
+      {
+        "field": "benefits_md",
+        "priority": "Medium",
+        "strategy": "Full-text search, keywords"
+      },
+      {
+        "field": "application_process_md",
+        "priority": "Low",
+        "strategy": "Full-text search, keywords"
+      },
+      {
+        "field": "documents_required_md",
+        "priority": "Low",
+        "strategy": "Full-text search, keywords"
+      },
+      {
+        "field": "faqs.q",
+        "priority": "Low",
+        "strategy": "Full-text search, keywords"
+      },
+      {
+        "field": "faqs.a",
+        "priority": "Low",
+        "strategy": "Full-text search, keywords"
+      },
+      {
+        "field": "category[]",
+        "priority": "Medium",
+        "strategy": "Exact match of category names, synonym mapping"
+      },
+      {
+        "field": "tags[]",
+        "priority": "Medium",
+        "strategy": "Exact match of tag names, synonym mapping"
+      },
+      {
+        "field": "beneficiary_type[]",
+        "priority": "Medium",
+        "strategy": "Exact match of type, synonym mapping"
+      },
+      {
+        "field": "ministry",
+        "priority": "Low",
+        "strategy": "Exact match, partial match"
+      },
+      {
+        "field": "implementing_agency",
+        "priority": "Low",
+        "strategy": "Exact match, partial match"
+      },
+      {
+        "field": "nodal_department",
+        "priority": "Low",
+        "strategy": "Exact match, partial match"
+      },
+      {
+        "field": "state",
+        "priority": "Low",
+        "strategy": "Exact match, partial match"
+      }
+    ],
+    "strategies": [
+      "Typo Tolerance/Fuzzy Matching (e.g., PostgreSQL `pg_trgm` extension for trigram similarity)",
+      "Synonym Mapping (e.g., 'pension' -> 'वृद्धावस्था पेंशन', 'old age support')",
+      "Relevance Ranking (boost exact matches in name/short_title, then description/benefits/eligibility, then categories/tags)",
+      "Stemming and Stop Word Removal (standard NLP for English text)",
+      "Autocomplete/Auto-suggest (based on `name`, `short_title`, popular `tags[]`, and `category[]`)",
+      "Snippet Highlighting (show where the search term appears in the result description)",
+      "Integrated Filtering (allow users to apply `browse_filters` after initial search results)"
+    ]
+  },
+  "seo_strategy": {
+    "page_types_to_generate": [
+      {
+        "type": "Scheme Detail Page",
+        "url_pattern": "/yojana/<slug>",
+        "count": "2754 schemes",
+        "purpose": "Primary landing page for users searching for specific schemes or deep dives into a scheme."
+      },
+      {
+        "type": "Category Page",
+        "url_pattern": "/yojana/category/<category_slug>",
+        "count": "15+ categories",
+        "purpose": "Aggregation page for users searching for schemes related to a specific need (e.g., 'farmer schemes')."
+      },
+      {
+        "type": "State-Specific Page",
+        "url_pattern": "/yojana/state/<state_slug>",
+        "count": "28 states + UTs",
+        "purpose": "Aggregation page for users searching for schemes available in their region."
+      },
+      {
+        "type": "Scheme Level Page",
+        "url_pattern": "/yojana/level/<level_slug>",
+        "count": "2 (Central/State)",
+        "purpose": "Aggregation page for users searching for schemes by administrative level."
+      },
+      {
+        "type": "Eligibility Checker Results Page",
+        "url_pattern": "/check/results?...",
+        "count": "Dynamic",
+        "purpose": "While dynamic, ensure shareable URLs and potentially meta-descriptions for matched schemes to allow for some indexability of specific eligibility scenarios. Use canonicals if needed."
+      }
+    ],
+    "schema_markup_recommendations": [
+      {
+        "schema_type": "GovernmentService",
+        "applies_to": "Scheme Detail Pages (/yojana/<slug>)",
+        "properties": [
+          "`name` (from scheme `name`)",
+          "`description` (from `short_summary_bullet_points` or `description`)",
+          "`provider` (Organization name from `implementing_agency`)",
+          "`serviceType` (from `category[]`, `benefit_type`)",
+          "`areaServed` (from `state` if State-level, 'India' if Central-level)",
+          "`availableChannel` (from `application_process_md` - Online/Offline/Both)",
+          "`audience` (from `beneficiary_type[]`, `genders[]`, `age_min`, `age_max`, `caste_categories[]`)",
+          "`url` (from `apply_url`)",
+          "`image` (from `scheme_image_url`)",
+          "`sameAs` (from `references_json.url`)"
+        ]
+      },
+      {
+        "schema_type": "FAQPage",
+        "applies_to": "Scheme Detail Pages (if `faqs` exist)",
+        "properties": [
+          "Embed `faqs[]` as `Question` and `Answer` types."
+        ]
+      },
+      {
+        "schema_type": "BreadcrumbList",
+        "applies_to": "All navigatable pages",
+        "properties": [
+          "Standard breadcrumb structure (Home > Category > Scheme Name)."
+        ]
+      },
+      {
+        "schema_type": "WebPage",
+        "applies_to": "Home, About, Browse, Category, State, Level pages",
+        "properties": [
+          "Standard `name`, `description`, `url`, etc."
+        ]
+      }
+    ],
+    "meta_content_strategy": [
+      {
+        "content_type": "Meta Title (`<title>`)",
+        "templates": {
+          "Scheme Detail": "{{name}} - {{short_title}} | Government Scheme by {{ministry}} | Aarambha Haq",
+          "Category Page": "Government Schemes for {{category}} in India | Aarambha Haq",
+          "State Page": "Government Schemes in {{state}} | Aarambha Haq",
+          "Home Page": "Aarambha Haq: Discover All Indian Government Welfare Schemes in 22 Languages"
+        }
+      },
+      {
+        "content_type": "Meta Description (`<meta name=\"description\">`)",
+        "templates": {
+          "Scheme Detail": "{{short_summary_bullet_points}}... Apply online on Aarambha Haq. Get eligibility, benefits, documents & application details.",
+          "Category Page": "Find all government welfare schemes related to {{category}} for Indian citizens. Explore eligibility, benefits & how to apply easily on Aarambha Haq.",
+          "State Page": "Discover central and state government schemes for citizens of {{state}}. Get details on eligibility, benefits, and application process on Aarambha Haq.",
+          "Home Page": "Aarambha Haq helps you find, understand, and apply for 2700+ Indian government welfare schemes in 22 languages. Check eligibility & apply easily."
+        }
+      },
+      {
+        "content_type": "Open Graph / Twitter Card Tags",
+        "templates": {
+          "og:title": "Same as Meta Title",
+          "og:description": "Same as Meta Description",
+          "og:image": "Use `scheme_image_url` if available, else site logo.",
+          "og:url": "Canonical URL of the page."
+        }
+      }
+    ]
+  },
+  "scheme_card": {
+    "fields_to_show": [
+      {
+        "field": "name",
+        "display_priority": "Highest",
+        "notes": "Main heading, primary link to detail page."
+      },
+      {
+        "field": "short_title",
+        "display_priority": "High",
+        "notes": "Secondary title, provides quick context, below `name`."
+      },
+      {
+        "field": "description",
+        "display_priority": "High",
+        "notes": "A very brief 1-2 sentence summary. Ideal if `short_summary_bullet_points` is generated."
+      },
+      {
+        "field": "level",
+        "display_priority": "Medium",
+        "notes": "Badge (e.g., 'Central Scheme', 'State Scheme')."
+      },
+      {
+        "field": "state",
+        "display_priority": "Medium",
+        "notes": "Badge, only for `level='State'` schemes (e.g., 'Uttar Pradesh')."
+      },
+      {
+        "field": "is_dbt",
+        "display_priority": "Medium",
+        "notes": "Badge 'DBT' if true, signifying direct transfer."
+      },
+      {
+        "field": "key_eligibility_chips",
+        "display_priority": "High",
+        "source_fields": [
+          "genders[]",
+          "age_min",
+          "age_max",
+          "caste_categories[]",
+          "disability_required",
+          "for_sc_st",
+          "for_minority"
+        ],
+        "notes": "1-2 most defining eligibility chips (e.g., 'For Women', 'Age 18-60', 'For SC/ST', 'For PwD'). Choose dynamically based on scheme specifics or pre-defined hierarchy."
+      },
+      {
+        "field": "benefit_summary",
+        "display_priority": "High",
+        "source_fields": [
+          "benefit_type",
+          "benefit_amount_inr"
+        ],
+        "notes": "Concise benefit indicator (e.g., 'Cash Benefit', 'Scholarship', 'Loan up to ₹1 Lakh')."
+      },
+      {
+        "field": "apply_url",
+        "display_priority": "Highest",
+        "notes": "Prominent 'Apply Now' button, direct call to action."
+      }
+    ]
+  }
+}

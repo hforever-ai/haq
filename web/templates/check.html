@@ -1,0 +1,723 @@
+{% extends "base.html" %}
+{% set en = lang_code == 'en' %}
+{% block title %}{{ t('check_eligibility_aarambha_haq') }}{% endblock %}
+
+{% block content %}
+<!-- ═══════════════════════════════════════════════════
+     ELIGIBILITY WIZARD — category filter → 7 steps
+═══════════════════════════════════════════════════ -->
+<div id="wizard" data-step="0" data-lang="{{ lang_code }}">
+  <!-- Screen reader live announcer — visually hidden -->
+  <div id="wzAnnouncer" aria-live="assertive" aria-atomic="true" class="sr-only"></div>
+
+  <!-- ── Screen 0: Welcome ── -->
+  <div class="wz-screen" data-screen="0" role="region" aria-label="{{ t('welcome_eligibility_check') }}">
+    <div class="wz-hero">
+      <div class="wrap">
+        <div class="wz-breadcrumb">Aarambha Haq · {{ t('eligibility_check') }}</div>
+        <h1 class="wz-hero-h1">{{ t('which_government_schemesare_right_for_you') | safe }}</h1>
+        <p class="wz-hero-sub">{{ t('answer_7_quick_questions_well_find_the_best_m') }}</p>
+        <div class="wz-badges">
+          <span>{{ t('100_free') }}</span>
+          <span>{{ t('2_minutes') }}</span>
+          <span>{{ t('22_languages') }}</span>
+        </div>
+        <button class="btn btn-saffron wz-start-btn" onclick="wzGoTo('cat')">
+          {{ t('get_started') }}
+          <svg width="18" height="18" fill="none" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="wz-trust-row">
+        <div class="wz-trust-card"><div class="wz-trust-n">2,754+</div><div class="wz-trust-lbl">{{ t('schemes') }}</div></div>
+        <div class="wz-trust-card"><div class="wz-trust-n">36</div><div class="wz-trust-lbl">{{ t('states_uts') }}</div></div>
+        <div class="wz-trust-card"><div class="wz-trust-n">15</div><div class="wz-trust-lbl">{{ t('categories') }}</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Screen: Category Interest (shown before questions) ── -->
+  <div class="wz-screen" data-screen="cat" style="display:none" role="region" aria-label="{{ t('choose_your_interests') }}">
+    <div class="wz-progress-bar-wrap">
+      <div class="wrap">
+        <p class="wz-cat-header">{{ t('step_1_of_2_personalise') }}</p>
+      </div>
+    </div>
+    <div class="wrap wz-card-wrap">
+      <div class="wz-card" style="max-width:660px">
+        <p class="wz-q-label">{{ t('what_type_of_scheme_are_you_looking_for') }}</p>
+        <p class="wz-hint" style="margin-top:-12px;margin-bottom:20px">{{ t('pick_one_or_more_you_can_always_change_this_l') }}</p>
+
+        <div class="wz-cat-grid">
+          <button class="wz-cat-card" data-cat="mahila"      onclick="wzToggleCat('mahila',this)">
+            <span class="wz-cat-icon">👩</span>
+            <span class="wz-cat-label">{{ t('women') }}</span>
+            <span class="wz-cat-count">381 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="student"     onclick="wzToggleCat('student',this)">
+            <span class="wz-cat-icon">📚</span>
+            <span class="wz-cat-label">{{ t('students') }}</span>
+            <span class="wz-cat-count">748 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="farmer"      onclick="wzToggleCat('farmer',this)">
+            <span class="wz-cat-icon">🌾</span>
+            <span class="wz-cat-label">{{ t('farmers') }}</span>
+            <span class="wz-cat-count">400 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="employment"  onclick="wzToggleCat('employment',this)">
+            <span class="wz-cat-icon">💼</span>
+            <span class="wz-cat-label">{{ t('employment') }}</span>
+            <span class="wz-cat-count">459 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="health"      onclick="wzToggleCat('health',this)">
+            <span class="wz-cat-icon">🏥</span>
+            <span class="wz-cat-label">{{ t('health') }}</span>
+            <span class="wz-cat-count">184 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="pension"     onclick="wzToggleCat('pension',this)">
+            <span class="wz-cat-icon">🧓</span>
+            <span class="wz-cat-label">{{ t('pension') }}</span>
+            <span class="wz-cat-count">259 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="housing"     onclick="wzToggleCat('housing',this)">
+            <span class="wz-cat-icon">🏠</span>
+            <span class="wz-cat-label">{{ t('housing') }}</span>
+            <span class="wz-cat-count">69 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="disability"  onclick="wzToggleCat('disability',this)">
+            <span class="wz-cat-icon">♿</span>
+            <span class="wz-cat-label">{{ t('disability') }}</span>
+            <span class="wz-cat-count">289 {{ t('schemes_2') }}</span>
+          </button>
+          <button class="wz-cat-card" data-cat="bpl"         onclick="wzToggleCat('bpl',this)">
+            <span class="wz-cat-icon">🍚</span>
+            <span class="wz-cat-label">{{ t('bpl_ration') }}</span>
+            <span class="wz-cat-count">141 {{ t('schemes_2') }}</span>
+          </button>
+        </div>
+
+        <div class="wz-nav">
+          <button class="wz-back-btn" onclick="wzGoTo(0)">← {{ t('back') }}</button>
+          <button class="btn btn-saffron wz-next-btn" onclick="wzFromCat()">
+            {{ t('next') }} →
+          </button>
+        </div>
+      </div>
+      <p class="wz-skip">
+        <button onclick="profile.categories=[];wzGoTo(1)">{{ t('skip_this_step') }}</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Screen: Questions (steps 1–7) ── -->
+  <div class="wz-screen" data-screen="questions" style="display:none" role="region" aria-label="{{ t('eligibility_questions') }}" aria-live="polite">
+    <div class="wz-progress-bar-wrap">
+      <div class="wrap">
+        <div class="wz-progress-track"><div class="wz-progress-fill" id="wzProgressFill"></div></div>
+        <p class="wz-progress-label" id="wzProgressLabel">{{ t('question_17') }}</p>
+      </div>
+    </div>
+
+    <div class="wrap wz-card-wrap">
+      <div class="wz-card" id="wzCard">
+
+        <!-- Step 1: State -->
+        <div class="wz-step" data-step="1">
+          <p class="wz-q-label">{{ t('which_state_do_you_live_in') }}</p>
+          <label for="fState" class="sr-only">{{ t('select_your_state') }}</label>
+          {% set _states = [
+            "Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam",
+            "Bihar","Chandigarh","Chhattisgarh","Dadra & Nagar Haveli and Daman & Diu",
+            "Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir",
+            "Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh",
+            "Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry",
+            "Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura",
+            "Uttar Pradesh","Uttarakhand","West Bengal"
+          ] %}
+          <select class="wz-select" id="fState" aria-describedby="fStateHint">
+            <option value="">🇮🇳 {{ t('all_of_india_central_schemes') }}</option>
+            {% for s in _states %}
+            <option value="{{ s }}">{{ states_i18n.get(s, s) if not en else s }}</option>
+            {% endfor %}
+          </select>
+          <p class="wz-hint" id="fStateHint">{{ t('central_schemes_apply_across_all_states') }}</p>
+        </div>
+
+        <!-- Step 2: Age -->
+        <div class="wz-step" data-step="2">
+          <p class="wz-q-label">{{ t('how_old_are_you') }}</p>
+          <div class="wz-grid-2">
+            <button class="wz-opt" data-group="age" data-value="24" onclick="wzPickAge(18,30,24,this)">{{ t('1830_years') }}</button>
+            <button class="wz-opt" data-group="age" data-value="38" onclick="wzPickAge(31,45,38,this)">{{ t('3145_years') }}</button>
+            <button class="wz-opt" data-group="age" data-value="53" onclick="wzPickAge(46,60,53,this)">{{ t('4660_years') }}</button>
+            <button class="wz-opt" data-group="age" data-value="65" onclick="wzPickAge(61,99,65,this)">{{ t('60') }}</button>
+          </div>
+          <div class="wz-exact-age">
+            <label class="wz-exact-lbl" for="fAgeExact">{{ t('exact_age') }}</label>
+            <input type="number" id="fAgeExact" class="wz-num-input" min="1" max="120"
+              placeholder="{{ t('eg_35') }}" oninput="wzAgeExact(this)"
+              aria-label="{{ t('enter_your_exact_age') }}">
+          </div>
+        </div>
+
+        <!-- Step 3: Gender -->
+        <div class="wz-step" data-step="3">
+          <p class="wz-q-label">{{ t('what_is_your_gender') }}</p>
+          <div class="wz-col">
+            <button class="wz-opt" data-group="gender" data-value="female" onclick="wzPick('gender','female',this)"><span class="wz-opt-icon">👩</span> {{ t('female') }}</button>
+            <button class="wz-opt" data-group="gender" data-value="male"   onclick="wzPick('gender','male',this)"><span class="wz-opt-icon">👨</span> {{ t('male') }}</button>
+            <button class="wz-opt" data-group="gender" data-value="other"  onclick="wzPick('gender','other',this)"><span class="wz-opt-icon">🏳️‍⚧️</span> {{ t('other_transgender') }}</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Caste -->
+        <div class="wz-step" data-step="4">
+          <p class="wz-q-label">{{ t('which_social_category_do_you_belong_to') }}</p>
+          <div class="wz-col">
+            <button class="wz-opt" data-group="caste" data-value="SC"      onclick="wzPick('caste','SC',this)">{{ t('scheduled_caste_sc') }}</button>
+            <button class="wz-opt" data-group="caste" data-value="ST"      onclick="wzPick('caste','ST',this)">{{ t('scheduled_tribe_st') }}</button>
+            <button class="wz-opt" data-group="caste" data-value="OBC"     onclick="wzPick('caste','OBC',this)">{{ t('other_backward_class_obc') }}</button>
+            <button class="wz-opt" data-group="caste" data-value="EWS"     onclick="wzPick('caste','EWS',this)">{{ t('economically_weaker_section_ews') }}</button>
+            <button class="wz-opt" data-group="caste" data-value="General" onclick="wzPick('caste','General',this)">{{ t('general_open_category') }}</button>
+            <button class="wz-opt" data-group="caste" data-value="unknown" onclick="wzPick('caste','unknown',this)">{{ t('dont_know_prefer_not_to_say') }}</button>
+          </div>
+        </div>
+
+        <!-- Step 5: BPL + Income -->
+        <div class="wz-step" data-step="5">
+          <p class="wz-q-label">{{ t('do_you_have_a_bpl_ration_card') }}</p>
+          <div class="wz-row-2" style="margin-bottom:var(--s5)">
+            <button class="wz-opt" data-group="bpl" data-value="yes" onclick="wzBpl(true,this)"><span class="wz-opt-icon">✅</span> {{ t('yes_i_have_bpl_card') }}</button>
+            <button class="wz-opt" data-group="bpl" data-value="no"  onclick="wzBpl(false,this)"><span class="wz-opt-icon">❌</span> {{ t('no') }}</button>
+          </div>
+          <div id="incomeSection" style="display:none">
+            <p class="wz-sub-label">{{ t('your_households_annual_income') }}</p>
+            <div class="wz-col">
+              <button class="wz-opt" data-group="income" data-value="100000"  onclick="wzPick('income','100000',this)">₹0 – ₹1 {{ t('lakh') }}</button>
+              <button class="wz-opt" data-group="income" data-value="250000"  onclick="wzPick('income','250000',this)">₹1 – ₹2.5 {{ t('lakh') }}</button>
+              <button class="wz-opt" data-group="income" data-value="500000"  onclick="wzPick('income','500000',this)">₹2.5 – ₹5 {{ t('lakh') }}</button>
+              <button class="wz-opt" data-group="income" data-value="1000000" onclick="wzPick('income','1000000',this)">₹5 – ₹10 {{ t('lakh') }}</button>
+              <button class="wz-opt" data-group="income" data-value="1500000" onclick="wzPick('income','1500000',this)">₹10 {{ t('lakh_2') }}</button>
+              <button class="wz-opt" data-group="income" data-value="0"       onclick="wzPick('income','0',this)">{{ t('dont_know_prefer_not_to_say') }}</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: Residence -->
+        <div class="wz-step" data-step="6">
+          <p class="wz-q-label">{{ t('where_do_you_live') }}</p>
+          <div class="wz-col">
+            <button class="wz-opt" data-group="residence" data-value="rural" onclick="wzPick('residence','rural',this)"><span class="wz-opt-icon">🌾</span> {{ t('rural_area_village') }}</button>
+            <button class="wz-opt" data-group="residence" data-value="urban" onclick="wzPick('residence','urban',this)"><span class="wz-opt-icon">🏙️</span> {{ t('urban_area_city_town') }}</button>
+          </div>
+        </div>
+
+        <!-- Step 7: Review -->
+        <div class="wz-step" data-step="7">
+          <p class="wz-q-label">{{ t('review_your_answers') }}</p>
+          <div class="wz-review" id="wzReview"></div>
+          <p class="wz-hint">{{ t('want_to_change_anything_go_back') }}</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="wz-nav">
+          <button class="wz-back-btn" onclick="wzBack()">← {{ t('back') }}</button>
+          <button class="btn btn-saffron wz-next-btn" id="wzNextBtn" onclick="wzNext()">{{ t('next') }} →</button>
+        </div>
+      </div>
+
+      <p class="wz-skip"><button onclick="wzNext(true)">{{ t('skip_this_question') }}</button></p>
+    </div>
+  </div>
+
+  <!-- ── Screen: Results ── -->
+  <div class="wz-screen" data-screen="results" style="display:none" role="region" aria-label="{{ t('your_matching_schemes') }}" aria-live="polite">
+    <div id="wzLoading" class="wz-result-hero">
+      <div class="wrap">
+        <div class="wz-loading-inner">
+          <div class="wz-spinner" aria-hidden="true"></div>
+          <div class="wz-loading-title">{{ t('searching_schemes') }}</div>
+          <div class="wz-loading-sub">{{ t('scanning_2754_schemes_for_your_profile') }}</div>
+        </div>
+      </div>
+    </div>
+    <div id="wzResultsFound" style="display:none">
+      <div class="wz-result-hero">
+        <div class="wrap">
+          <div class="wz-result-count-wrap">
+            <div class="wz-result-count" id="wzResultCount">0</div>
+            <h1 class="wz-result-h1">{{ t('schemes_matched_for_you') }}</h1>
+            <p class="wz-result-profile" id="wzResultProfile"></p>
+          </div>
+        </div>
+      </div>
+      <div class="wrap wz-results-wrap">
+        <button class="wz-restart-btn" onclick="wzRestart()">← {{ t('new_check') }}</button>
+        <div id="wzResultsFilterWrap"></div>
+        <div class="wz-scheme-list" id="wzSchemeList"></div>
+        <div class="wz-results-footer">
+          <a href="{{ lp }}/yojana" class="wz-all-link">{{ t('browse_all_2754_schemes') }}</a>
+        </div>
+      </div>
+    </div>
+    <div id="wzNoResults" style="display:none">
+      <div class="wz-result-hero">
+        <div class="wrap"><h1 style="color:#fff;margin:0;padding:var(--s6) 0">{{ t('no_schemes_found') }}</h1></div>
+      </div>
+      <div class="wrap wz-results-wrap">
+        <button class="wz-restart-btn" onclick="wzRestart()">← {{ t('try_again') }}</button>
+        <div class="wz-empty-state">
+          <div class="wz-empty-icon" aria-hidden="true">🔍</div>
+          <h3>{{ t('try_fewer_filters') }}</h3>
+          <p>{{ t('change_your_state_or_remove_casteincome_detai') }}</p>
+          <div class="wz-empty-btns">
+            <button class="btn btn-saffron" onclick="wzRestart()">{{ t('try_again') }}</button>
+            <a href="{{ lp }}/yojana" class="btn btn-outline">{{ t('browse_all_schemes') }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #wizard -->
+
+<script>
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = String(str || '');
+  return d.innerHTML;
+}
+
+const LANG  = "{{ lang_code }}";
+const TOTAL = 7;
+let curStep = 0;
+const profile = {
+  categories: [],
+  state:'', age:null, gender:'', caste:'', has_bpl:false, income:0, residence:''
+};
+
+const BENEFIT_LABELS = {
+  cash:       LANG==='en' ? 'Cash support'         : 'नकद सहायता',
+  pension:    LANG==='en' ? 'Pension'               : 'पेंशन',
+  education:  LANG==='en' ? 'Education'             : 'शिक्षा',
+  housing:    LANG==='en' ? 'Housing'               : 'आवास',
+  health:     LANG==='en' ? 'Health'                : 'स्वास्थ्य',
+  loan:       LANG==='en' ? 'Loan'                  : 'ऋण/लोन',
+  subsidy:    LANG==='en' ? 'Subsidy'               : 'सब्सिडी',
+  insurance:  LANG==='en' ? 'Insurance'             : 'बीमा',
+  skill_development: LANG==='en' ? 'Skill training' : 'कौशल प्रशिक्षण',
+  food_security: LANG==='en' ? 'Food security'      : 'खाद्य सुरक्षा',
+  kind:       LANG==='en' ? 'In-kind support'       : 'वस्तु सहायता',
+  service:    LANG==='en' ? 'Service'               : 'सेवा',
+};
+
+const CAT_LABELS = {
+  mahila:'👩 महिला', women:'👩 महिला',
+  student:'📚 ' + (LANG==='en'?'Students':'छात्र'),
+  farmer:'🌾 ' + (LANG==='en'?'Farmers':'किसान'),
+  employment:'💼 ' + (LANG==='en'?'Employment':'रोजगार'),
+  health:'🏥 ' + (LANG==='en'?'Health':'स्वास्थ्य'),
+  pension:'🧓 ' + (LANG==='en'?'Pension':'पेंशन'),
+  housing:'🏠 ' + (LANG==='en'?'Housing':'आवास'),
+  disability:'♿ ' + (LANG==='en'?'Disability':'दिव्यांग'),
+  child:'👶 ' + (LANG==='en'?'Child welfare':'बच्चे'),
+  tribal:'🌿 ' + (LANG==='en'?'Tribal':'जनजाति'),
+  bpl:'🍚 BPL',
+  maternity:'🤱 ' + (LANG==='en'?'Maternity':'मातृत्व'),
+  entrepreneur:'💡 ' + (LANG==='en'?'Entrepreneur':'उद्यमी'),
+  minority:'🕌 ' + (LANG==='en'?'Minority':'अल्पसंख्यक'),
+  elderly:'🧓 ' + (LANG==='en'?'Senior citizen':'वरिष्ठ'),
+};
+
+let allResultSchemes = [];
+let activeFilterCat  = 'all';
+
+// ── Screen/step navigation ──────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.wz-screen').forEach(s => s.style.display = 'none');
+  const el = document.querySelector('[data-screen="' + name + '"]');
+  if (!el) return;
+  el.style.display = '';
+  // Move focus to first heading or focusable element in new screen
+  const focusTarget = el.querySelector('h1, h2, [tabindex="-1"], button, a');
+  if (focusTarget) {
+    focusTarget.setAttribute('tabindex', focusTarget.tabIndex >= 0 ? focusTarget.tabIndex : '-1');
+    focusTarget.focus({ preventScroll: false });
+  }
+}
+
+function showStep(n) {
+  document.querySelectorAll('.wz-step').forEach(s => s.style.display = 'none');
+  const el = document.querySelector('.wz-step[data-step="' + n + '"]');
+  if (!el) return;
+  el.style.display = 'block';
+  // Announce new question to screen readers by focusing the question label
+  const qlabel = el.querySelector('.wz-q-label');
+  if (qlabel) {
+    qlabel.setAttribute('tabindex', '-1');
+    qlabel.focus({ preventScroll: false });
+  }
+  const pct = Math.round((n / TOTAL) * 100);
+  document.getElementById('wzProgressFill').style.width = pct + '%';
+  const lbl = LANG === 'en' ? 'Question ' + n + '/' + TOTAL : 'प्रश्न ' + n + '/' + TOTAL;
+  document.getElementById('wzProgressLabel').textContent = lbl;
+  const nextBtn = document.getElementById('wzNextBtn');
+  if (n === TOTAL) {
+    nextBtn.textContent = LANG === 'en' ? '🔍 Find schemes' : '🔍 योजनाएं खोजें';
+  } else {
+    nextBtn.textContent = LANG === 'en' ? 'Next →' : 'अगला →';
+  }
+  document.querySelector('.wz-skip').style.display = n < TOTAL ? '' : 'none';
+  if (n === 7) buildReview();
+  const card = document.getElementById('wzCard');
+  card.classList.remove('wz-card-in');
+  void card.offsetWidth;
+  card.classList.add('wz-card-in');
+}
+
+function wzGoTo(n) {
+  if (n === 0) { showScreen('0'); curStep = 0; return; }
+  if (n === 'cat') { showScreen('cat'); return; }
+  curStep = n;
+  showScreen('questions');
+  showStep(n);
+}
+
+function wzNext() {
+  if (curStep === TOTAL) { fetchResults(); return; }
+  if (curStep === 1) profile.state = document.getElementById('fState').value;
+  if (curStep === 2) {
+    const exact = parseInt(document.getElementById('fAgeExact').value, 10);
+    if (exact > 0 && (exact < 1 || exact > 120)) {
+      document.getElementById('fAgeExact').setCustomValidity(
+        LANG === 'en' ? 'Please enter age between 1–120' : 'कृपया 1–120 के बीच उम्र दर्ज करें');
+      document.getElementById('fAgeExact').reportValidity();
+      return;
+    }
+    document.getElementById('fAgeExact').setCustomValidity('');
+  }
+  wzGoTo(curStep + 1);
+}
+
+function wzBack() {
+  if (curStep <= 1) { showScreen('cat'); return; }
+  wzGoTo(curStep - 1);
+}
+
+// ── Category step ───────────────────────────────────────────────
+function wzToggleCat(cat, btn) {
+  const idx = profile.categories.indexOf(cat);
+  if (idx >= 0) {
+    profile.categories.splice(idx, 1);
+    btn.classList.remove('selected');
+  } else {
+    profile.categories.push(cat);
+    btn.classList.add('selected');
+  }
+}
+
+function wzFromCat() {
+  wzGoTo(1);
+}
+
+// ── Option pickers ──────────────────────────────────────────────
+function _wzSetOpt(group, btn) {
+  document.querySelectorAll('.wz-opt[data-group="' + group + '"]').forEach(function(b) {
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  btn.classList.add('selected');
+  btn.setAttribute('aria-pressed', 'true');
+}
+
+function wzPick(group, value, btn) {
+  _wzSetOpt(group, btn);
+  profile[group] = value;
+}
+
+function wzPickAge(min, max, mid, btn) {
+  _wzSetOpt('age', btn);
+  profile.age = mid;
+  document.getElementById('fAgeExact').value = mid;
+}
+
+function wzAgeExact(input) {
+  const v = parseInt(input.value, 10);
+  if (v > 0) {
+    profile.age = v;
+    document.querySelectorAll('.wz-opt[data-group="age"]').forEach(function(b) {
+      b.classList.remove('selected');
+      b.setAttribute('aria-pressed', 'false');
+    });
+  }
+}
+
+function wzBpl(hasBpl, btn) {
+  _wzSetOpt('bpl', btn);
+  profile.has_bpl = hasBpl;
+  document.getElementById('incomeSection').style.display = hasBpl ? 'none' : '';
+}
+
+function buildReview() {
+  const yes  = LANG === 'en' ? 'Yes' : 'हाँ';
+  const no   = LANG === 'en' ? 'No'  : 'नहीं';
+  const rows = [
+    [LANG==='en'?'State':'राज्य',     profile.state || '—'],
+    [LANG==='en'?'Age':'उम्र',        profile.age ? profile.age + (LANG==='en'?' yrs':' साल') : '—'],
+    [LANG==='en'?'Gender':'लिंग',     profile.gender === 'female' ? (LANG==='en'?'Female':'महिला') : profile.gender === 'male' ? (LANG==='en'?'Male':'पुरुष') : profile.gender || '—'],
+    [LANG==='en'?'Category':'जाति',   profile.caste || '—'],
+    ['BPL',                            profile.has_bpl ? yes : no],
+    [LANG==='en'?'Income':'आय',        profile.income > 0 ? '₹' + Number(profile.income).toLocaleString('hi-IN') + (LANG==='en'?' / yr':' / साल') : (LANG==='en'?'Not stated':'बताया नहीं')],
+    [LANG==='en'?'Residence':'निवास', profile.residence === 'rural' ? (LANG==='en'?'Rural':'ग्रामीण') : profile.residence === 'urban' ? (LANG==='en'?'Urban':'शहरी') : '—'],
+  ];
+  const container = document.getElementById('wzReview');
+  container.textContent = '';
+  rows.forEach(function(pair) {
+    const row = document.createElement('div');
+    row.className = 'wz-review-row';
+    const lbl = document.createElement('span'); lbl.className = 'wz-review-lbl'; lbl.textContent = pair[0];
+    const val = document.createElement('span'); val.className = 'wz-review-val'; val.textContent = pair[1];
+    row.appendChild(lbl); row.appendChild(val);
+    container.appendChild(row);
+  });
+}
+
+// ── Results ─────────────────────────────────────────────────────
+async function fetchResults() {
+  showScreen('results');
+  document.getElementById('wzLoading').style.display = '';
+  document.getElementById('wzResultsFound').style.display = 'none';
+  document.getElementById('wzNoResults').style.display = 'none';
+  // Reset filter strip
+  allResultSchemes = []; activeFilterCat = 'all';
+  document.getElementById('wzResultsFilterWrap').innerHTML = '';
+
+  const qp = new URLSearchParams({
+    gender:   profile.gender || 'female',
+    age:      String(profile.age || 30),
+    state:    profile.state || 'All',
+    income:   String(profile.income),
+    caste:    profile.caste,
+    residence: profile.residence,
+    has_bpl:  profile.has_bpl ? '1' : '0',
+    has_disability: '0',
+    is_minority: '0',
+  });
+
+  try {
+    const res    = await fetch('/api/check/results?' + qp);
+    const data   = await res.json();
+    let schemes  = data.schemes || [];
+
+    // Pre-filter by selected categories
+    if (profile.categories.length > 0) {
+      schemes = schemes.filter(function(s) {
+        if (!s.beneficiary_type || !s.beneficiary_type.length) return true; // include uncategorised
+        return profile.categories.some(function(c) {
+          const alt = c === 'mahila' ? 'women' : (c === 'women' ? 'mahila' : null);
+          return s.beneficiary_type.indexOf(c) >= 0 || (alt && s.beneficiary_type.indexOf(alt) >= 0);
+        });
+      });
+    }
+
+    allResultSchemes = schemes;
+    document.getElementById('wzLoading').style.display = 'none';
+
+    // Announce result count to screen readers
+    const announcer = document.getElementById('wzAnnouncer');
+    if (announcer) {
+      announcer.textContent = schemes.length > 0
+        ? (LANG === 'en' ? schemes.length + ' schemes found for you.' : schemes.length + ' योजनाएं आपके लिए मिलीं।')
+        : (LANG === 'en' ? 'No schemes found.' : 'कोई योजना नहीं मिली।');
+    }
+
+    if (schemes.length > 0) {
+      document.getElementById('wzResultCount').textContent = schemes.length;
+      const parts = [];
+      if (profile.state) parts.push(profile.state);
+      if (profile.gender === 'female') parts.push(LANG==='en'?'Female':'महिला');
+      else if (profile.gender === 'male') parts.push(LANG==='en'?'Male':'पुरुष');
+      if (profile.age) parts.push(profile.age + (LANG==='en'?' yrs':' साल'));
+      document.getElementById('wzResultProfile').textContent = parts.join(' · ');
+      renderSchemeList(schemes);
+      renderResultsFilter(schemes);
+      document.getElementById('wzResultsFound').style.display = '';
+    } else {
+      document.getElementById('wzNoResults').style.display = '';
+    }
+  } catch(e) {
+    document.getElementById('wzLoading').style.display = 'none';
+    document.getElementById('wzNoResults').style.display = '';
+  }
+}
+
+// ── Results filter strip ────────────────────────────────────────
+function renderResultsFilter(schemes) {
+  const seen = new Set(), cats = [];
+  schemes.forEach(function(s) {
+    if (s.beneficiary_type) s.beneficiary_type.forEach(function(c) {
+      if (c && !seen.has(c) && CAT_LABELS[c]) { seen.add(c); cats.push(c); }
+    });
+  });
+  if (cats.length < 2) return;
+
+  const strip = document.createElement('div');
+  strip.className = 'wz-results-filter';
+
+  const allChip = document.createElement('button');
+  allChip.className = 'wz-filter-chip active';
+  allChip.dataset.cat = 'all';
+  allChip.setAttribute('aria-pressed', 'true');
+  allChip.textContent = LANG === 'en' ? '🔍 All' : '🔍 सभी';
+  allChip.addEventListener('click', function() { filterByCategory('all'); });
+  strip.appendChild(allChip);
+
+  cats.slice(0, 10).forEach(function(cat) {
+    const chip = document.createElement('button');
+    chip.className = 'wz-filter-chip';
+    chip.dataset.cat = cat;
+    chip.setAttribute('aria-pressed', 'false');
+    chip.textContent = CAT_LABELS[cat] || cat;
+    chip.addEventListener('click', function() { filterByCategory(cat); });
+    strip.appendChild(chip);
+  });
+
+  document.getElementById('wzResultsFilterWrap').appendChild(strip);
+}
+
+function filterByCategory(cat) {
+  activeFilterCat = cat;
+  document.querySelectorAll('.wz-filter-chip').forEach(function(c) {
+    const isActive = c.dataset.cat === cat;
+    c.classList.toggle('active', isActive);
+    c.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+  const filtered = cat === 'all' ? allResultSchemes : allResultSchemes.filter(function(s) {
+    return s.beneficiary_type && (s.beneficiary_type.indexOf(cat) >= 0 ||
+      (cat === 'mahila' && s.beneficiary_type.indexOf('women') >= 0));
+  });
+  const list = document.getElementById('wzSchemeList');
+  list.textContent = '';
+  renderSchemeList(filtered);
+  document.getElementById('wzResultCount').textContent = filtered.length;
+}
+
+// ── Scheme card renderer ────────────────────────────────────────
+function renderSchemeList(schemes) {
+  const list = document.getElementById('wzSchemeList');
+  list.textContent = '';
+  schemes.forEach(function(s) {
+    const card = document.createElement('div');
+    card.className = 'scheme-card';
+
+    const top = document.createElement('div'); top.className = 'sc-top';
+    const meta = document.createElement('div'); meta.className = 'sc-meta';
+    if (s.benefit_type && BENEFIT_LABELS[s.benefit_type]) {
+      const tag = document.createElement('span');
+      tag.className = 'sc-benefit-tag';
+      tag.textContent = BENEFIT_LABELS[s.benefit_type];
+      meta.appendChild(tag);
+    }
+    top.appendChild(meta);
+    const lvlBadge = document.createElement('span');
+    lvlBadge.className = 'sc-badge ' + (s.level === 'Central' ? 'sc-central' : 'sc-state');
+    lvlBadge.textContent = s.level === 'Central' ? (LANG==='en'?'Central':'केंद्र') : (s.state || (LANG==='en'?'State':'राज्य'));
+    top.appendChild(lvlBadge);
+    card.appendChild(top);
+
+    const h3 = document.createElement('h3'); h3.className = 'sc-name';
+    const nameLink = document.createElement('a');
+    nameLink.href = window.HAQ_LP + '/yojana/s/' + esc(s.slug);
+    nameLink.textContent = s.name;
+    nameLink.addEventListener('click', function() {
+      sessionStorage.setItem('haq_back_to', window.HAQ_LP + '/check');
+    });
+    h3.appendChild(nameLink);
+    card.appendChild(h3);
+
+    if (s.ministry) {
+      const min = document.createElement('p'); min.className = 'sc-ministry'; min.textContent = s.ministry;
+      card.appendChild(min);
+    }
+
+    if (s.benefit_amount_inr || s.benefit_amount_description) {
+      const amt = document.createElement('div'); amt.className = 'sc-amount';
+      amt.textContent = s.benefit_amount_inr
+        ? '₹' + Number(s.benefit_amount_inr).toLocaleString('hi-IN')
+        : s.benefit_amount_description;
+      card.appendChild(amt);
+    }
+
+    const whyBtn = document.createElement('button');
+    whyBtn.className = 'sc-why-btn';
+    whyBtn.textContent = (LANG==='en'?'▼ Why are you eligible?':'▼ आप पात्र क्यों हैं?');
+    const whyList = document.createElement('ul');
+    whyList.className = 'sc-why-list';
+    whyList.style.display = 'none';
+    buildReasons(s).forEach(function(r) {
+      const li = document.createElement('li'); li.textContent = r; whyList.appendChild(li);
+    });
+    whyBtn.addEventListener('click', function() {
+      const open = whyList.style.display !== 'none';
+      whyList.style.display = open ? 'none' : '';
+      whyBtn.textContent = (open ? '▼' : '▲') + (LANG==='en'?' Why are you eligible?':' आप पात्र क्यों हैं?');
+    });
+    card.appendChild(whyBtn);
+    card.appendChild(whyList);
+
+    const actions = document.createElement('div'); actions.className = 'sc-actions';
+    if (s.apply_url) {
+      const applyA = document.createElement('a');
+      applyA.href = s.apply_url; applyA.target = '_blank'; applyA.rel = 'noopener noreferrer';
+      applyA.className = 'btn btn-saffron sc-apply-btn';
+      applyA.textContent = LANG==='en'?'Apply ↗':'आवेदन करें ↗';
+      actions.appendChild(applyA);
+    }
+    const moreA = document.createElement('a');
+    moreA.href = window.HAQ_LP + '/yojana/s/' + esc(s.slug);
+    moreA.className = 'sc-more-link';
+    moreA.textContent = LANG==='en'?'Learn more':'और जानें';
+    moreA.addEventListener('click', function() {
+      sessionStorage.setItem('haq_back_to', window.HAQ_LP + '/check');
+    });
+    actions.appendChild(moreA);
+    card.appendChild(actions);
+    list.appendChild(card);
+  });
+}
+
+function buildReasons(s) {
+  const r = [];
+  if (profile.age && s.age_min && s.age_max)
+    r.push((LANG==='en'?'Age ':'आयु ') + profile.age + (LANG==='en'?' yrs, eligibility: ':' साल, पात्रता: ') + s.age_min + '–' + s.age_max + (LANG==='en'?' yrs':' साल'));
+  if (profile.gender === 'female' && Array.isArray(s.beneficiary_type) && (s.beneficiary_type.includes('women') || s.beneficiary_type.includes('mahila')))
+    r.push(LANG==='en'?'Special scheme for women':'महिलाओं के लिए विशेष योजना');
+  if (profile.state && s.state !== 'All' && s.state === profile.state)
+    r.push(profile.state + (LANG==='en'?' state scheme':' राज्य योजना'));
+  if (Array.isArray(s.caste_categories) && s.caste_categories.length && profile.caste && s.caste_categories.includes(profile.caste))
+    r.push(profile.caste + (LANG==='en'?' category':' वर्ग के लिए'));
+  if (s.benefit_type && BENEFIT_LABELS[s.benefit_type])
+    r.push(BENEFIT_LABELS[s.benefit_type]);
+  return r.length ? r : [LANG==='en'?'Central scheme — all citizens eligible':'केंद्रीय योजना — सभी नागरिक पात्र'];
+}
+
+function wzRestart() {
+  profile.categories = []; profile.state = ''; profile.age = null; profile.gender = '';
+  profile.caste = ''; profile.has_bpl = false; profile.income = 0; profile.residence = '';
+  document.querySelectorAll('.wz-opt,.wz-cat-card').forEach(function(b) {
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  document.getElementById('fAgeExact').value = '';
+  document.getElementById('fState').value = '';
+  document.getElementById('incomeSection').style.display = 'none';
+  wzGoTo(0);
+}
+
+/* Init ARIA on all wizard option buttons */
+document.querySelectorAll('.wz-opt').forEach(function(b) {
+  b.setAttribute('aria-pressed', 'false');
+});
+</script>
+{% endblock %}

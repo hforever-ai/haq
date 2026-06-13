@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}पृष्ठ नहीं मिला — Aarambha Haq{% endblock %}
+{% block description %}यह पृष्ठ उपलब्ध नहीं है। Aarambha Haq पर 2,754+ सरकारी योजनाएं खोजें।{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"होम","item":"https://haq.aarambhax.in{{ lp }}/"},
+  {"@type":"ListItem","position":2,"name":"पृष्ठ नहीं मिला"}
+]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section style="min-height:65vh;display:flex;align-items:center;padding:var(--s10) 0">
+  <div class="wrap" style="text-align:center;max-width:560px;margin:0 auto">
+
+    <!-- Visual: 404 number styled like brand -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:var(--s3);margin-bottom:var(--s6)" aria-hidden="true">
+      <div style="font-size:clamp(56px,10vw,80px);font-weight:900;color:var(--saffron);line-height:1">4</div>
+      <div style="width:clamp(44px,8vw,64px);height:clamp(44px,8vw,64px);border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="color:#fff" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+          <path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div style="font-size:clamp(56px,10vw,80px);font-weight:900;color:var(--saffron);line-height:1">4</div>
+    </div>
+
+    <h1 style="font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--navy);margin-bottom:var(--s3)">
+      यह पृष्ठ नहीं मिला
+    </h1>
+    <p style="font-size:15px;color:var(--ink-2);line-height:1.75;margin-bottom:var(--s8)">
+      यह लिंक टूटा हुआ है, या पृष्ठ हटा दिया गया है।<br>
+      नीचे दिए विकल्पों से अपनी योजना खोजें।
+    </p>
+
+    <!-- Search bar -->
+    <form class="not-found-search" action="{{ lp }}/yojana" method="get" role="search" aria-label="Search schemes">
+      <input type="search" name="q" placeholder="योजना खोजें... जैसे 'PM किसान', 'छात्रवृत्ति'" aria-label="Search schemes">
+      <button type="submit">खोजें</button>
+    </form>
+
+    <!-- Primary CTAs -->
+    <div style="display:flex;gap:var(--s3);flex-wrap:wrap;justify-content:center;margin-bottom:var(--s8)">
+      <a href="{{ lp }}/check"  class="btn btn-primary btn-lg">पात्रता जाँचें →</a>
+      <a href="{{ lp }}/yojana" class="btn btn-outline-navy btn-lg">सभी योजनाएं देखें</a>
+    </div>
+
+    <!-- Quick category chips -->
+    <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin-bottom:var(--s3)">श्रेणी से खोजें</p>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--s2);justify-content:center;margin-bottom:var(--s8)">
+      {% for slug, key in [
+        ('mahila','cat.women'),('student','cat.student'),('farmer','cat.farmer'),
+        ('employment','cat.employment'),('health','cat.health'),('disability','cat.disability'),
+      ] %}
+      <a href="{{ lp }}/yojana/{{ slug }}"
+         style="padding:5px 14px;border-radius:99px;border:1px solid rgba(11,31,77,.18);font-size:13px;color:var(--navy);font-weight:600;background:#fff">
+        {{ t(key) }}
+      </a>
+      {% endfor %}
+    </div>
+
+    <p style="font-size:13px;color:var(--ink-3)">
+      <a href="{{ lp }}/" style="color:var(--saffron-deep);font-weight:600">← होम पर जाएं</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block title %}Aarambha Haq के बारे में — मुफ़्त सरकारी योजना पात्रता जाँच{% endblock %}
+{% block description %}Aarambha Haq — भारत की 2,754+ सरकारी योजनाओं की जानकारी 22 भाषाओं में। MyScheme.gov.in के डेटा से, AI अनुवाद, निःशुल्क, कोई पंजीकरण नहीं।{% endblock %}
+{% block og_title %}Aarambha Haq के बारे में — 2,754 सरकारी योजनाएं, 22 भाषाएं{% endblock %}
+{% block og_desc %}भारत के हर नागरिक को उनकी भाषा में सरकारी योजनाओं की जानकारी। निःशुल्क, विज्ञापन-मुक्त, बिना पंजीकरण।{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "Aarambha Haq — हमारे बारे में",
+  "url": "https://haq.aarambhax.in{{ current_path }}",
+  "description": "Aarambha Haq एक निःशुल्क सेवा है जो भारत की 2,754+ सरकारी योजनाओं की जानकारी 22 भारतीय भाषाओं में देती है।",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Aarambha AI Studio",
+    "url": "https://aarambhax.in",
+    "logo": {"@type":"ImageObject","url":"https://haq.aarambhax.in/static/img/og.png"}
+  }
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Aarambha Haq का डेटा कहाँ से आता है?","acceptedAnswer":{"@type":"Answer","text":"हमारा डेटा भारत सरकार के आधिकारिक पोर्टल MyScheme.gov.in से लिया गया है। हम केंद्र सरकार और राज्य सरकारों की 2,754+ योजनाओं की जानकारी संग्रहीत करते हैं।"}},
+  {"@type":"Question","name":"क्या Aarambha Haq सरकारी वेबसाइट है?","acceptedAnswer":{"@type":"Answer","text":"नहीं, Aarambha Haq एक स्वतंत्र प्लेटफ़ॉर्म है जो Aarambha AI Studio द्वारा बनाया गया है। हम सरकार से संबद्ध नहीं हैं। हमारा डेटा सरकारी स्रोतों से है, लेकिन आवेदन के लिए हमेशा संबंधित सरकारी पोर्टल से पुष्टि करें।"}},
+  {"@type":"Question","name":"22 भाषाओं में अनुवाद कैसे होता है?","acceptedAnswer":{"@type":"Answer","text":"हम AI (Gemini) का उपयोग करके सभी योजनाओं की जानकारी को भारत की 22 अनुसूचित भाषाओं में अनुवाद करते हैं — जिसमें हिंदी, मराठी, बंगाली, तमिल, तेलुगु, कन्नड़, मलयालम आदि शामिल हैं।"}},
+  {"@type":"Question","name":"क्या यह प्लेटफ़ॉर्म हमेशा मुफ़्त रहेगा?","acceptedAnswer":{"@type":"Answer","text":"हाँ। Aarambha Haq का उद्देश्य है कि सरकारी योजनाओं की जानकारी हर नागरिक तक पहुँचे — चाहे उनकी भाषा कोई भी हो। यह सेवा हमेशा निःशुल्क रहेगी, बिना विज्ञापन के।"}}
+]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── Page Hero ── -->
+<section class="page-hero-band" aria-label="About">
+  <div class="wrap page-hero-inner">
+    <nav class="page-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ lp }}/">होम</a> <span aria-hidden="true">›</span>
+      <span>{{ t('nav.about') }}</span>
+    </nav>
+    <h1 class="page-hero-h1">हमारे बारे में</h1>
+    <p class="page-hero-sub">Aarambha Haq — भारत के हर नागरिक तक, उनकी भाषा में सरकारी योजनाओं की जानकारी।</p>
+  </div>
+</section>
+
+<!-- ── Content ── -->
+<div class="section">
+  <div class="wrap" style="max-width:780px">
+
+    <!-- Mission statement -->
+    <p style="font-size:18px;line-height:1.85;color:var(--ink-2);margin-bottom:var(--s8);border-left:4px solid var(--saffron);padding-left:var(--s5)">
+      भारत में करोड़ों नागरिक सरकारी योजनाओं के पात्र होते हुए भी उनका लाभ नहीं उठा पाते — क्योंकि जानकारी या तो उनकी भाषा में नहीं होती, या बहुत जटिल होती है। <strong style="color:var(--navy)">Aarambha Haq</strong> इस अंतर को मिटाने के लिए बनाया गया है।
+    </p>
+
+    <!-- Stats row -->
+    <div class="about-stats-row" style="margin-bottom:var(--s10)">
+      <div class="about-stat"><div class="about-stat-n">2,754+</div><div class="about-stat-lbl">सरकारी योजनाएं</div></div>
+      <div class="about-stat"><div class="about-stat-n">22</div><div class="about-stat-lbl">अनुसूचित भाषाएं</div></div>
+      <div class="about-stat"><div class="about-stat-n">15</div><div class="about-stat-lbl">लाभार्थी श्रेणियां</div></div>
+      <div class="about-stat"><div class="about-stat-n">₹0</div><div class="about-stat-lbl">हमेशा निःशुल्क</div></div>
+    </div>
+
+    <!-- How it works -->
+    <h2 style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:var(--navy);margin-bottom:var(--s6)">हम कैसे काम करते हैं</h2>
+    <div class="about-how-grid">
+      <div class="about-how-step">
+        <div class="about-how-num">1</div>
+        <div class="about-how-body">
+          <h3>डेटा संग्रह</h3>
+          <p>हम भारत सरकार के आधिकारिक पोर्टल <a href="https://www.myscheme.gov.in" target="_blank" rel="noopener" aria-label="MyScheme.gov.in (नई विंडो में खुलेगा)" style="color:var(--saffron-deep);font-weight:600">MyScheme.gov.in</a> से 2,754+ केंद्रीय और राज्य योजनाओं का डेटा लेते हैं — पात्रता शर्तें, लाभ, आवेदन प्रक्रिया, और आधिकारिक लिंक।</p>
+        </div>
+      </div>
+      <div class="about-how-step">
+        <div class="about-how-num">2</div>
+        <div class="about-how-body">
+          <h3>AI अनुवाद</h3>
+          <p>हर योजना की जानकारी को AI (Gemini) की मदद से भारत की 22 अनुसूचित भाषाओं में अनुवाद किया जाता है — हिंदी, मराठी, बंगाली, तमिल, तेलुगु, कन्नड़, मलयालम, गुजराती, पंजाबी, उर्दू और अन्य।</p>
+        </div>
+      </div>
+      <div class="about-how-step">
+        <div class="about-how-num">3</div>
+        <div class="about-how-body">
+          <h3>स्मार्ट पात्रता जाँच</h3>
+          <p>हमारा पात्रता जाँच टूल 7 सवालों में — राज्य, उम्र, लिंग, आय, जाति, निवास और विशेष परिस्थितियाँ — के आधार पर आपके लिए उपयुक्त योजनाएं खोजता है।</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data source trust -->
+    <div style="background:var(--navy-tint);border:1px solid rgba(11,31,77,.08);border-radius:16px;padding:var(--s6) var(--s7);margin:var(--s8) 0">
+      <h3 style="font-size:16px;font-weight:800;color:var(--navy);margin-bottom:var(--s4)">डेटा स्रोत और विश्वसनीयता</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)">
+        <div style="display:flex;gap:var(--s3);align-items:flex-start">
+          <span style="color:var(--saffron-deep);font-size:18px;flex-shrink:0;margin-top:1px">✦</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px">स्रोत</div>
+            <div style="font-size:13px;color:var(--ink-2)">MyScheme.gov.in (भारत सरकार)</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:var(--s3);align-items:flex-start">
+          <span style="color:#138808;font-size:18px;flex-shrink:0;margin-top:1px">✔</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px">अपडेट</div>
+            <div style="font-size:13px;color:var(--ink-2)">नियमित अंतराल पर जाँच</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:var(--s3);align-items:flex-start">
+          <span style="color:var(--saffron-deep);font-size:18px;flex-shrink:0;margin-top:1px">🔒</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px">गोपनीयता</div>
+            <div style="font-size:13px;color:var(--ink-2)">कोई डेटा संग्रह नहीं, कोई ट्रैकिंग नहीं</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:var(--s3);align-items:flex-start">
+          <span style="color:#138808;font-size:18px;flex-shrink:0;margin-top:1px">✔</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px">निःशुल्क</div>
+            <div style="font-size:13px;color:var(--ink-2)">कोई शुल्क नहीं, कोई विज्ञापन नहीं</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid rgba(11,31,77,.06)">
+        ⚠ योजनाओं की शर्तें समय-समय पर बदल सकती हैं। आवेदन से पहले संबंधित सरकारी पोर्टल या विभाग से पुष्टि अवश्य करें।
+      </p>
+    </div>
+
+    <!-- About Aarambha AI Studio -->
+    <h2 style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:var(--navy);margin:var(--s10) 0 var(--s5)">Aarambha AI Studio</h2>
+    <div class="tips-box">
+      <ul style="display:flex;flex-direction:column;gap:var(--s3);list-style:none;padding:0">
+        <li style="display:flex;gap:var(--s3);align-items:flex-start;font-size:15px;color:var(--ink-2)"><span style="color:var(--saffron-deep);flex-shrink:0;margin-top:2px">✦</span> Aarambha Haq, <a href="https://aarambhax.in" target="_blank" rel="noopener" aria-label="Aarambha AI Studio (नई विंडो में खुलेगा)" style="color:var(--saffron-deep);font-weight:600">Aarambha AI Studio</a> का एक निःशुल्क उत्पाद है।</li>
+        <li style="display:flex;gap:var(--s3);align-items:flex-start;font-size:15px;color:var(--ink-2)"><span style="color:var(--saffron-deep);flex-shrink:0;margin-top:2px">✦</span> AI की मदद से भारत के नागरिकों तक सरकारी सेवाएं 22 भाषाओं में पहुँचाने का मिशन।</li>
+        <li style="display:flex;gap:var(--s3);align-items:flex-start;font-size:15px;color:var(--ink-2)"><span style="color:var(--saffron-deep);flex-shrink:0;margin-top:2px">✦</span> यह प्लेटफ़ॉर्म पूरी तरह निःशुल्क और विज्ञापन-मुक्त है।</li>
+        <li style="display:flex;gap:var(--s3);align-items:flex-start;font-size:15px;color:var(--ink-2)"><span style="color:var(--saffron-deep);flex-shrink:0;margin-top:2px">✦</span> कोई पंजीकरण, कोई डेटा संग्रह नहीं — पूरी तरह गोपनीय।</li>
+        <li style="display:flex;gap:var(--s3);align-items:flex-start;font-size:15px;color:var(--ink-2)"><span style="color:var(--saffron-deep);flex-shrink:0;margin-top:2px">✦</span> यह प्लेटफ़ॉर्म सरकार से संबद्ध नहीं है — हम एक स्वतंत्र, नागरिक-सेवा उत्पाद हैं।</li>
+      </ul>
+    </div>
+
+    <!-- FAQ -->
+    <h2 style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:var(--navy);margin:var(--s10) 0 var(--s5)">अक्सर पूछे जाने वाले सवाल</h2>
+    <div class="faq-list">
+
+      <details class="faq-item">
+        <summary>Aarambha Haq का डेटा कहाँ से आता है?</summary>
+        <div class="faq-a">
+          <p>हमारा डेटा भारत सरकार के आधिकारिक पोर्टल <a href="https://www.myscheme.gov.in" target="_blank" rel="noopener" aria-label="MyScheme.gov.in (नई विंडो में खुलेगा)">MyScheme.gov.in</a> से लिया गया है। हम केंद्र सरकार और राज्य सरकारों की 2,754+ योजनाओं की जानकारी संग्रहीत करते हैं।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>क्या Aarambha Haq सरकारी वेबसाइट है?</summary>
+        <div class="faq-a">
+          <p>नहीं, Aarambha Haq एक स्वतंत्र प्लेटफ़ॉर्म है जो Aarambha AI Studio द्वारा बनाया गया है। हम सरकार से संबद्ध नहीं हैं। हमारा डेटा सरकारी स्रोतों से है, लेकिन आवेदन के लिए हमेशा संबंधित सरकारी पोर्टल से पुष्टि करें।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>22 भाषाओं में अनुवाद कैसे होता है?</summary>
+        <div class="faq-a">
+          <p>हम AI (Gemini) का उपयोग करके सभी योजनाओं की जानकारी को भारत की 22 अनुसूचित भाषाओं में अनुवाद करते हैं — जिसमें हिंदी, मराठी, बंगाली, तमिल, तेलुगु, कन्नड़, मलयालम आदि शामिल हैं।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>मेरी पात्रता जाँच की जानकारी कहाँ जाती है?</summary>
+        <div class="faq-a">
+          <p>आपकी पात्रता जाँच की जानकारी हमारे सर्वर पर सेव नहीं होती। हम कोई व्यक्तिगत डेटा नहीं रखते। आपकी पहचान और जानकारी पूरी तरह गोपनीय है।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>क्या यह प्लेटफ़ॉर्म हमेशा मुफ़्त रहेगा?</summary>
+        <div class="faq-a">
+          <p>हाँ। Aarambha Haq का उद्देश्य है कि सरकारी योजनाओं की जानकारी हर नागरिक तक पहुँचे — चाहे उनकी भाषा कोई भी हो। यह सेवा हमेशा निःशुल्क रहेगी, बिना विज्ञापन के।</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>योजना की जानकारी कितनी अद्यतन (updated) है?</summary>
+        <div class="faq-a">
+          <p>हम नियमित रूप से MyScheme.gov.in से डेटा अपडेट करते हैं। फिर भी, योजनाओं की शर्तें और लाभ समय-समय पर बदल सकते हैं। किसी भी योजना के लिए आवेदन से पहले संबंधित विभाग के आधिकारिक पोर्टल पर जाकर नवीनतम जानकारी की पुष्टि करें।</p>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- CTA -->
+    <div style="background:var(--navy);border-radius:16px;padding:var(--s8);text-align:center;margin-top:var(--s10)">
+      <h3 style="color:#fff;margin-bottom:var(--s2);font-size:20px">अपनी पात्र योजनाएं जानें</h3>
+      <p style="color:rgba(255,255,255,.6);font-size:14px;margin-bottom:var(--s5)">
+        7 सवालों में जानें आप कौन-कौन सी सरकारी योजनाओं के लिए पात्र हैं
+      </p>
+      <div style="display:flex;justify-content:center;gap:var(--s3);flex-wrap:wrap">
+        <a href="{{ lp }}/check" class="btn btn-saffron" style="height:46px;padding:0 28px;font-size:15px">पात्रता जांचें →</a>
+        <a href="{{ lp }}/yojana" class="btn" style="height:46px;padding:0 24px;font-size:15px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)">सभी योजनाएं देखें</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

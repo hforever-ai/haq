@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% set _cmap = {'mahila':'women','student':'student','farmer':'farmer','employment':'employment','disability':'disability','pension':'pension','health':'health','child':'child','tribal':'tribal','bpl':'bpl','entrepreneur':'entrepreneur','minority':'minority','housing':'housing','maternity':'maternity','elderly':'elderly'} %}
+
+{% block title %}
+  {% if category %}{{ t('cat.' + _cmap.get(category, category)) }} — Aarambha Haq
+  {% else %}{{ t('nav.all_schemes') }} — Aarambha Haq{% endif %}
+{% endblock %}
+
+{% block description %}
+  {% if category %}{{ t('cat.' + _cmap.get(category, category)) }} सरकारी योजनाएं — पात्रता जाँचें निःशुल्क। {{ total }}+ योजनाएं।
+  {% else %}भारत की 2,754+ सरकारी योजनाएं — महिला, किसान, छात्र, रोजगार, स्वास्थ्य, पेंशन।{% endif %}
+{% endblock %}
+
+{% block schema %}
+{% if category and cat_faqs %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for item in cat_faqs %}
+    {
+      "@type": "Question",
+      "name": {{ item.q | tojson }},
+      "acceptedAnswer": {"@type": "Answer", "text": {{ item.a | tojson }}}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% set slug_to_key = {
+  'mahila':'cat.women','student':'cat.student','farmer':'cat.farmer',
+  'employment':'cat.employment','disability':'cat.disability','pension':'cat.pension',
+  'health':'cat.health','child':'cat.child','tribal':'cat.tribal',
+  'bpl':'cat.bpl','entrepreneur':'cat.entrepreneur','minority':'cat.minority',
+  'housing':'cat.housing','maternity':'cat.maternity','elderly':'cat.elderly',
+} %}
+{% set cat_label = t(slug_to_key.get(category, 'nav.all_schemes')) if category else t('nav.all_schemes') %}
+
+{% if category %}
+<!-- ═══════════════════════════════════════════════════════
+     CATEGORY HERO — photo background
+═══════════════════════════════════════════════════════ -->
+<section class="cat-hero" aria-label="{{ cat_label }}">
+  <div class="cat-hero-bg" style="background-image:url('/static/images/cat-{{ category }}.png')"></div>
+  <div class="wrap cat-hero-inner">
+
+    <a href="{{ lp }}/yojana" class="cat-hero-back" aria-label="{{ t('nav.all_schemes') }}">
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14" aria-hidden="true">
+        <path d="M10 2L4 7l6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      {{ t('nav.all_schemes') }}
+    </a>
+
+    <h1 class="cat-hero-title">{{ cat_label }}</h1>
+    <p class="cat-hero-count">{{ total }}+ {{ t('trust.schemes_count') }}</p>
+
+    <form class="cat-hero-search" action="{{ lp }}/yojana/{{ category }}" method="get" role="search">
+      <input name="q" type="search" value="{{ q }}"
+             placeholder="{{ t('browse.search_placeholder') }}"
+             aria-label="{{ t('browse.search_placeholder') }}"
+             autocomplete="off">
+      <button type="submit" aria-label="खोजें">
+        <svg width="17" height="17" fill="none" viewBox="0 0 18 18" aria-hidden="true">
+          <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 12l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </form>
+
+  </div>
+</section>
+
+{% else %}
+<!-- ═══════════════════════════════════════════════════════
+     ALL SCHEMES HEADER
+═══════════════════════════════════════════════════════ -->
+<div class="page-hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">{{ t('trust.schemes_count') }}</div>
+    <h1>{{ t('nav.all_schemes') }}</h1>
+    <p class="tagline">{{ t('hero.sub') }}</p>
+    <form class="home-hero-search" action="{{ lp }}/yojana" method="get" role="search"
+          style="max-width:500px;margin-top:var(--s5)">
+      <input name="q" type="search" value="{{ q }}"
+             placeholder="{{ t('browse.search_placeholder') }}"
+             autocomplete="off">
+      <button type="submit">
+        <svg width="17" height="17" fill="none" viewBox="0 0 18 18" aria-hidden="true">
+          <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 12l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        खोजें
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- ── Category filter bar ── -->
+<div class="rights-filter-wrap">
+  <div class="wrap">
+    <div class="rights-filter-bar">
+      <a href="{{ lp }}/yojana{% if q %}?q={{ q }}{% endif %}"
+         class="rights-pill {% if not category %}active{% endif %}">सभी योजनाएं</a>
+      {% for slug, key in [
+        ('mahila','cat.women'),('student','cat.student'),('farmer','cat.farmer'),
+        ('employment','cat.employment'),('disability','cat.disability'),
+        ('pension','cat.pension'),('health','cat.health'),('child','cat.child'),
+        ('tribal','cat.tribal'),('bpl','cat.bpl'),('entrepreneur','cat.entrepreneur'),
+        ('minority','cat.minority'),('housing','cat.housing'),
+        ('maternity','cat.maternity'),('elderly','cat.elderly'),
+      ] %}
+      <a href="{{ lp }}/yojana/{{ slug }}"
+         class="rights-pill {% if category == slug %}active{% endif %}">{{ t(key) }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCHEMES GRID
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="wrap">
+
+    {% if schemes %}
+    <div class="browse-meta" aria-live="polite">
+      {{ total }} {{ t('trust.schemes_count') }}{% if q %} — "<strong>{{ q }}</strong>"{% endif %}
+    </div>
+
+    <div class="scheme-grid">
+      {% for s in schemes %}
+      <article class="scheme-card">
+        <div class="scheme-card-top">
+          <div class="scheme-badge">
+            {{ 'केंद्रीय' if s.level == 'Central' else (s.state or 'राज्य') }}
+          </div>
+          <h3 class="scheme-card-title">
+            <a href="{{ lp }}/yojana/s/{{ s.slug }}">{{ s.name }}</a>
+          </h3>
+          <p class="scheme-card-desc">
+            {{ (s.description or '')[:130] }}{% if (s.description or '') | length > 130 %}…{% endif %}
+          </p>
+        </div>
+        <div class="scheme-card-foot">
+          <span class="scheme-card-ministry">{{ s.ministry or '' }}</span>
+          <a href="{{ lp }}/yojana/s/{{ s.slug }}" class="btn btn-sm btn-outline">
+            {{ t('scheme.view') }}
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% if total > schemes | length %}
+    <div class="text-center" style="margin-top:var(--s8)">
+      <a href="?page={{ page + 1 }}&q={{ q }}&state={{ state }}&level={{ level }}"
+         class="btn btn-outline btn-lg">
+        {{ t('browse.load_more') }}
+      </a>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center" style="padding:var(--s12) 0;color:var(--ink-3)">
+      <svg width="48" height="48" fill="none" viewBox="0 0 48 48" style="margin:0 auto var(--s4);opacity:.25" aria-hidden="true">
+        <circle cx="21" cy="21" r="14" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M32 32l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <p style="font-size:17px;font-weight:600;margin-bottom:var(--s2)">{{ t('browse.no_results') }}</p>
+      <a href="{{ lp }}/yojana/{{ category }}" class="btn btn-outline" style="margin-top:var(--s3)">
+        सभी योजनाएं देखें
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% if category %}
+{% if cat_faqs %}
+<section class="faq-section" aria-labelledby="cat-faq-heading">
+  <div class="wrap">
+    <h2 class="faq-heading" id="cat-faq-heading">{{ cat_label }} — {{ t('faq.title') or 'अक्सर पूछे जाने वाले सवाल' }}</h2>
+    <p class="faq-sub">{{ t('faq.sub') or 'इस श्रेणी की योजनाओं के बारे में जरूरी जानकारी' }}</p>
+    <div class="faq-list">
+      {% for item in cat_faqs %}
+      <details class="faq-item">
+        <summary>{{ item.q }}</summary>
+        <div class="faq-a"><p>{{ item.a }}</p></div>
+      </details>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:var(--s8)">
+      <a href="{{ lp }}/check" class="btn btn-saffron btn-lg">{{ t('hero.cta') or 'अपनी पात्रता जाँचें' }} →</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ── DEAD CODE below — kept as emergency fallback if cat_faqs empty ── #}
+{% set _CAT_FAQS_DEAD = {
+  'mahila': [
+    ('महिलाओं के लिए सबसे महत्वपूर्ण योजनाएं कौन सी हैं?',
+     'PM Matru Vandana Yojana (गर्भवती महिलाओं को ₹5,000), Ujjwala Yojana (मुफ्त LPG), Beti Bachao Beti Padhao, Sukanya Samriddhi Yojana (बेटी के लिए बचत), और विधवा पेंशन योजनाएं सबसे प्रमुख हैं।'),
+    ('विधवा पेंशन के लिए कैसे आवेदन करें?',
+     'अपने राज्य की सामाजिक कल्याण विभाग की वेबसाइट पर जाएं या CSC केंद्र पर जाकर आवेदन करें। आपको मृत्यु प्रमाणपत्र, आधार, बैंक खाता और आय प्रमाण चाहिए होगा।'),
+    ('क्या विवाहित और अविवाहित दोनों महिलाएं योजनाओं के लिए पात्र हैं?',
+     'हाँ, अधिकांश योजनाएं वैवाहिक स्थिति पर निर्भर नहीं करतीं। कुछ योजनाएं विशेष रूप से विधवा, तलाकशुदा या अकेली महिलाओं के लिए हैं।'),
+    ('Sukanya Samriddhi Yojana क्या है?',
+     '10 साल से कम उम्र की बेटियों के लिए बचत योजना। डाकघर या बैंक में खाता खोलें, सालाना ₹250 से ₹1.5 लाख जमा कर सकते हैं, 8.2% ब्याज मिलता है।'),
+  ],
+  'student': [
+    ('छात्रों के लिए मुख्य छात्रवृत्ति योजनाएं कौन सी हैं?',
+     'NSP (National Scholarship Portal) पर PM Scholarship, Pre-Matric/Post-Matric Scholarship SC/ST/OBC के लिए, Central Sector Scholarship, और Inspire Scholarship (विज्ञान के छात्रों के लिए) प्रमुख हैं।'),
+    ('NSP पोर्टल पर आवेदन कैसे करें?',
+     'scholarships.gov.in पर जाएं। नया रजिस्ट्रेशन करें, अपनी श्रेणी चुनें, दस्तावेज अपलोड करें (मार्कशीट, आय प्रमाण, बैंक पासबुक, आधार)।'),
+    ('क्या प्राइवेट कॉलेज के छात्र भी स्कॉलरशिप पा सकते हैं?',
+     'हाँ, कई योजनाएं सरकारी और मान्यता प्राप्त प्राइवेट दोनों संस्थानों के छात्रों के लिए हैं। AICTE और UGC से मान्यता प्राप्त कॉलेज के छात्र पात्र होते हैं।'),
+    ('PM Scholarship Scheme CSSS क्या है?',
+     'केंद्रीय माध्यमिक शिक्षा छात्रवृत्ति — 12वीं में 80%+ अंक वाले छात्रों को ₹12,000/साल (लड़कियों को ₹12,000, लड़कों को ₹10,000)।'),
+  ],
+  'farmer': [
+    ('PM-KISAN योजना में कितनी राशि मिलती है?',
+     '₹6,000 प्रति वर्ष — तीन किस्तों में सीधे बैंक खाते में। पात्रता: 2 हेक्टेयर तक की कृषि भूमि वाले किसान परिवार।'),
+    ('किसान क्रेडिट कार्ड (KCC) कैसे बनवाएं?',
+     'नजदीकी बैंक शाखा में जाएं। आवश्यक दस्तावेज: जमीन के कागज (खसरा/खतौनी), आधार, पासपोर्ट फोटो। KCC पर 7% ब्याज पर ऋण मिलता है।'),
+    ('फसल बीमा योजना (PMFBY) क्या है?',
+     'प्रधानमंत्री फसल बीमा योजना — प्राकृतिक आपदाओं से फसल नुकसान होने पर मुआवजा। खरीफ फसलों पर 2%, रबी पर 1.5% और बागवानी पर 5% प्रीमियम।'),
+    ('मृदा स्वास्थ्य कार्ड क्या है?',
+     'सरकार किसानों को मिट्टी की जाँच करके Soil Health Card देती है जिसमें खाद और उर्वरक की सही मात्रा बताई जाती है। यह मुफ्त है।'),
+  ],
+  'employment': [
+    ('MGNREGA में कितनी मजदूरी मिलती है?',
+     'राज्य के अनुसार अलग-अलग — ₹204 से ₹357 प्रतिदिन। साल में 100 दिन का गारंटीड काम। ग्राम पंचायत में जॉब कार्ड बनवाएं।'),
+    ('PM Kaushal Vikas Yojana (PMKVY) क्या है?',
+     'मुफ्त कौशल प्रशिक्षण — IT, निर्माण, स्वास्थ्य, इलेक्ट्रॉनिक्स आदि में। प्रशिक्षण के बाद सर्टिफिकेट और ₹8,000 तक प्रोत्साहन राशि।'),
+    ('स्टार्टअप के लिए सरकारी योजनाएं कौन सी हैं?',
+     'PM MUDRA Yojana (₹10 लाख तक ऋण), Startup India (टैक्स छूट और फंडिंग), और Stand Up India (SC/ST और महिला उद्यमियों के लिए) प्रमुख हैं।'),
+    ('EPFO का लाभ कैसे लें?',
+     'संगठित क्षेत्र में काम करने वाले कर्मचारियों का EPF खाता अनिवार्य है। UAN नंबर से epfindia.gov.in पर बैलेंस जांचें और ऑनलाइन निकासी करें।'),
+  ],
+  'pension': [
+    ('वृद्धावस्था पेंशन के लिए क्या पात्रता है?',
+     '60 साल या उससे अधिक आयु, BPL परिवार से हों। IGNOAPS (इंदिरा गाँधी राष्ट्रीय वृद्धावस्था पेंशन) के तहत ₹200–500/माह केंद्र से, राज्य अतिरिक्त देते हैं।'),
+    ('NPS (National Pension System) क्या है?',
+     'सरकारी और निजी कर्मचारियों के लिए स्वैच्छिक पेंशन योजना। सालाना ₹6,000 जमा करने पर अतिरिक्त टैक्स छूट। PFRDA द्वारा नियंत्रित।'),
+    ('APY (Atal Pension Yojana) किसके लिए है?',
+     '18-40 साल के असंगठित क्षेत्र के कर्मचारियों के लिए। ₹42-210/माह जमा करने पर 60 साल बाद ₹1,000-5,000/माह पेंशन की गारंटी।'),
+    ('पेंशन मिलना बंद हो जाए तो क्या करें?',
+     'ग्राम पंचायत/नगर पालिका में शिकायत करें। लाभार्थी सत्यापन में नाम कट गया हो तो BDO या तहसीलदार से संपर्क करें।'),
+  ],
+  'health': [
+    ('Ayushman Bharat (PM-JAY) में क्या कवर होता है?',
+     '₹5 लाख प्रति परिवार/साल तक मुफ्त इलाज। 1,350+ बीमारियाँ कवर, 25,000+ सरकारी और प्राइवेट अस्पताल। SECC-2011 डेटा के आधार पर पात्रता।'),
+    ('Ayushman Card कैसे बनवाएं?',
+     'pmjay.gov.in पर पात्रता जाँचें या CSC केंद्र पर जाएं। आधार और राशन कार्ड चाहिए। कार्ड मुफ्त बनता है।'),
+    ('PMJAY में कौन से अस्पताल शामिल हैं?',
+     'pmjay.gov.in पर "Find Hospital" से नजदीकी सूचीबद्ध अस्पताल खोजें। सरकारी अस्पतालों में कैशलेस इलाज होता है।'),
+    ('जन औषधि केंद्र क्या है?',
+     'सस्ती जेनेरिक दवाइयाँ — बाजार से 50-90% कम कीमत पर। देशभर में 10,000+ केंद्र। pradhanmantrijanam aushadhi.gov.in पर नजदीकी केंद्र खोजें।'),
+  ],
+  'disability': [
+    ('दिव्यांग पेंशन के लिए कैसे आवेदन करें?',
+     '40% या अधिक विकलांगता प्रमाण पत्र, आधार, बैंक खाता लेकर जिला समाज कल्याण कार्यालय या ग्राम पंचायत जाएं। IGNDPS के तहत ₹300/माह केंद्र से।'),
+    ('UDID कार्ड क्या है और कैसे बनवाएं?',
+     'Unique Disability ID — swavlambancard.gov.in पर आवेदन करें। सरकारी अस्पताल में विकलांगता प्रमाणपत्र बनवाएं। सभी सरकारी लाभों के लिए एक कार्ड।'),
+    ('दिव्यांग बच्चों के लिए क्या सुविधाएं हैं?',
+     'मुफ्त शिक्षा (RTE), विशेष बस पास, NIMHANS और AIIMS में मुफ्त इलाज, और राज्य सरकारों की विशेष छात्रवृत्ति।'),
+  ],
+  'housing': [
+    ('PM Awas Yojana (Gramin) में कितनी सहायता मिलती है?',
+     'मैदानी क्षेत्र में ₹1.2 लाख, पहाड़ी/पूर्वोत्तर में ₹1.3 लाख। मनरेगा से 90-95 दिन मजदूरी अतिरिक्त। पात्रता: बेघर या कच्चे घर में रहने वाले BPL परिवार।'),
+    ('PM Awas Yojana Urban किसके लिए है?',
+     'शहरों में EWS (₹3 लाख/साल तक आय), LIG (₹6 लाख तक) और MIG वर्ग के लिए। होम लोन पर 3-6.5% ब्याज सब्सिडी।'),
+    ('Awas Yojana की लिस्ट में नाम कैसे जाँचें?',
+     'pmayg.nic.in पर Beneficiary Search में आधार नंबर डालें।'),
+  ],
+  'child': [
+    ('आंगनवाड़ी में कौन सी सेवाएं मिलती हैं?',
+     '6 साल तक के बच्चों को पूरक पोषण, टीकाकरण, स्वास्थ्य जाँच, प्री-स्कूल शिक्षा और गर्भवती/धात्री महिलाओं को पोषण।'),
+    ('Sukanya Samriddhi Yojana में कितना फायदा है?',
+     '10 साल से कम उम्र की बेटी के लिए खाता खुलवाएं। 8.2% वार्षिक ब्याज, 15 साल तक जमा, 21 साल में परिपक्वता। पूरी तरह टैक्स-फ्री।'),
+    ('बाल श्रम मुक्त होने पर क्या लाभ मिलता है?',
+     'PENCIL पोर्टल पर बाल श्रम की शिकायत करें। बच्चों को पुनर्वास और स्कूल में प्रवेश के लिए सरकारी सहायता मिलती है।'),
+  ],
+  'maternity': [
+    ('PM Matru Vandana Yojana में कितनी राशि मिलती है?',
+     'पहले जीवित बच्चे के लिए ₹5,000 तीन किस्तों में — पंजीकरण पर ₹1,000, 6 महीने गर्भावस्था पर ₹2,000, बच्चे के जन्म और टीकाकरण पर ₹2,000।'),
+    ('प्रसूति अवकाश के क्या नियम हैं?',
+     'मातृत्व लाभ अधिनियम 2017 के तहत संगठित क्षेत्र में 26 सप्ताह का सवेतन अवकाश। असंगठित क्षेत्र की महिलाएं CSC से PMMVY का लाभ लें।'),
+    ('जननी सुरक्षा योजना (JSY) क्या है?',
+     'संस्थागत प्रसव को बढ़ावा देने के लिए — ग्रामीण BPL महिलाओं को ₹1,400, शहरी को ₹1,000 प्रसव के बाद। ASHA कार्यकर्ता मदद करती हैं।'),
+  ],
+  'elderly': [
+    ('बुजुर्गों के लिए IGNOAPS पेंशन कितनी है?',
+     '60-79 साल के BPL बुजुर्गों को ₹200/माह, 80 साल+ को ₹500/माह केंद्र सरकार से। राज्य सरकारें इसमें अतिरिक्त राशि जोड़ती हैं।'),
+    ('वरिष्ठ नागरिकों को ट्रेन में कितनी छूट मिलती है?',
+     'भारतीय रेलवे में 60+ पुरुषों को 40% और 58+ महिलाओं को 50% छूट। ऑनलाइन IRCTC या काउंटर से टिकट बुक करते समय SC concession चुनें।'),
+    ('PMVVY (Pradhan Mantri Vaya Vandana Yojana) क्या है?',
+     '60 साल+ के लिए LIC की सुरक्षित पेंशन योजना। ₹15 लाख तक निवेश पर 10 साल तक 7.4% गारंटीड पेंशन। मृत्यु पर पूरी राशि परिवार को वापस।'),
+  ],
+  'bpl': [
+    ('BPL सूची में नाम कैसे जुड़वाएं?',
+     'ग्राम पंचायत/नगर पालिका में SECC (Socio-Economic Caste Census) सर्वे के आधार पर BPL सूची बनती है। ग्राम प्रधान या BDO से संपर्क करें।'),
+    ('BPL राशन कार्ड के क्या फायदे हैं?',
+     'PDS से सस्ता अनाज (₹2/kg गेहूं, ₹3/kg चावल), Ayushman Bharat स्वास्थ्य बीमा, मुफ्त LPG (Ujjwala), और कई राज्य योजनाओं में प्राथमिकता।'),
+    ('राशन कार्ड नहीं है तो क्या करें?',
+     'ONORC (One Nation One Ration Card) से पूरे देश में राशन मिल सकता है। e-Shram पोर्टल पर असंगठित मजदूरों का पंजीकरण करें।'),
+  ],
+  'tribal': [
+    ('जनजाति के लिए वन अधिकार कानून क्या कहता है?',
+     'वन अधिकार अधिनियम 2006 के तहत वन भूमि पर 13 दिसंबर 2005 से पहले से रह रहे आदिवासियों को भूमि का अधिकार मिलता है। ग्राम सभा को आवेदन करें।'),
+    ('ST छात्रों के लिए कौन सी छात्रवृत्ति है?',
+     'Pre-Matric Scholarship ST (NSP पर), Post-Matric Scholarship, NEC Merit Scholarship (पूर्वोत्तर), और Rajiv Gandhi National Fellowship (UGC) प्रमुख हैं।'),
+    ('TRIFED क्या है?',
+     'Tribal Cooperative Marketing Development Federation — आदिवासी उत्पादों को बाजार देता है। हस्तशिल्प, लाख, महुआ जैसे वन उत्पाद बेचकर उचित कीमत मिलती है।'),
+  ],
+  'entrepreneur': [
+    ('MUDRA Yojana में कितना ऋण मिलता है?',
+     'तीन श्रेणियाँ: Shishu (₹50,000 तक), Kishore (₹50,000-5 लाख), Tarun (₹5-10 लाख)। बिना गारंटी के बैंक या NBFC से लोन।'),
+    ('महिला उद्यमियों के लिए विशेष योजनाएं कौन सी हैं?',
+     'Mahila Udyam Nidhi (PNB), Stand Up India (₹10 लाख-1 करोड़), और Annapurna Scheme (खाद्य उद्योग के लिए ₹50,000 तक) प्रमुख हैं।'),
+    ('Startup India में क्या मिलता है?',
+     '3 साल की टैक्स छूट, पेटेंट शुल्क में 80% छूट, फास्ट-ट्रैक रजिस्ट्रेशन। startup india.gov.in पर DPIIT रजिस्ट्रेशन करें।'),
+  ],
+  'minority': [
+    ('अल्पसंख्यकों के लिए PM Scholarship कौन सी है?',
+     'NSP पर Pre-Matric (₹1,000-10,000/साल) और Post-Matric (₹3,000-20,000/साल) Scholarship for Minorities। मुस्लिम, ईसाई, सिख, बौद्ध, जैन और पारसी पात्र।'),
+    ('Nai Roshni Yojana क्या है?',
+     'अल्पसंख्यक समुदाय की महिलाओं के नेतृत्व विकास के लिए प्रशिक्षण कार्यक्रम। जिला अल्पसंख्यक कल्याण कार्यालय से संपर्क करें।'),
+    ('Maulana Azad Fellowship किसके लिए है?',
+     'अल्पसंख्यक समुदाय के M.Phil/Ph.D छात्रों के लिए — 5 साल तक ₹25,000/माह Fellowship। UGC द्वारा संचालित।'),
+  ],
+} %}
+{% endif %}
+
+{% endblock %}

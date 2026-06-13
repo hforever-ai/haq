@@ -1,0 +1,548 @@
+{% extends "base.html" %}
+
+{% set cat = (scheme.beneficiary_type or [''])[0] %}
+{% set cat_map = {'mahila':'women','student':'student','farmer':'farmer','employment':'employment',
+  'disability':'disability','pension':'pension','health':'health','child':'child',
+  'tribal':'tribal','bpl':'bpl','entrepreneur':'entrepreneur','minority':'minority',
+  'housing':'housing','maternity':'maternity','elderly':'elderly','women':'women'} %}
+{% set cat_slug = cat_map.get(cat, cat) %}
+
+{# Human-readable beneficiary type labels for Hindi pages #}
+{% set BTYPE_HI = {
+  'women':'महिला','mahila':'महिला','female':'महिला',
+  'student':'छात्र/छात्रा','farmer':'किसान','entrepreneur':'उद्यमी',
+  'employment':'रोजगार प्रार्थी','health':'स्वास्थ्य लाभार्थी',
+  'pension':'पेंशनभोगी','housing':'आवास प्रार्थी',
+  'disability':'दिव्यांगजन','child':'बच्चे','tribal':'जनजाति',
+  'bpl':'BPL परिवार','maternity':'गर्भवती/स्तनपान कराने वाली माताएं',
+  'elderly':'वरिष्ठ नागरिक','minority':'अल्पसंख्यक','general':'सामान्य नागरिक',
+} %}
+
+{% block title %}{{ scheme.name }} — Aarambha Haq{% endblock %}
+{% block description %}{{ (scheme.description or (scheme.name + ' — पात्रता जाँचें, लाभ और आवेदन की जानकारी — Aarambha Haq')) | truncate(160) }}{% endblock %}
+{% block og_title %}{{ scheme.name }} — Aarambha Haq{% endblock %}
+{% block og_desc %}{{ (scheme.description or '') | truncate(160) }}{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "GovernmentService",
+  "name": {{ scheme.name | tojson }},
+  "description": {{ (scheme.description or '') | tojson }},
+  "url": "https://haq.aarambhax.in{{ current_path }}",
+  "provider": {
+    "@type": "GovernmentOrganization",
+    "name": {{ (scheme.ministry or 'Government of India') | tojson }}
+  }{% if scheme.apply_url %},
+  "potentialAction": {
+    "@type": "ApplyAction",
+    "target": {{ scheme.apply_url | tojson }}
+  }{% endif %}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"होम","item":"https://haq.aarambhax.in{{ lp }}/"},
+    {"@type":"ListItem","position":2,"name":"{{ t('nav.all_schemes') }}","item":"https://haq.aarambhax.in{{ lp }}/yojana"},
+    {"@type":"ListItem","position":3,"name":{{ scheme.name | tojson }},"item":"https://haq.aarambhax.in{{ current_path }}"}
+  ]
+}
+</script>
+{% if scheme.faqs_list and scheme.faqs_list | length > 0 %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{% for faq in scheme.faqs_list %}
+    {
+      "@type": "Question",
+      "name": {{ faq.q | tojson }},
+      "acceptedAnswer": {"@type": "Answer", "text": {{ (faq.a or '') | tojson }}}
+    }{% if not loop.last %},{% endif %}{% endfor %}
+  ]
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<!-- ── Back bar (shown when navigating from check/yojana) ── -->
+<div id="schemeBackBar" style="display:none" class="scheme-back-bar">
+  <div class="wrap">
+    <button class="scheme-back-btn" onclick="history.back()" aria-label="{{ t('go_back') }}">
+      <svg width="16" height="16" fill="none" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      {{ t('back_to_results') }}
+    </button>
+  </div>
+</div>
+<script>
+(function(){
+  var backBar = document.getElementById('schemeBackBar');
+  var ref = document.referrer;
+  var backTo = sessionStorage.getItem('haq_back_to');
+  if (backTo || (window.history.length > 1 && ref && ref.indexOf(location.hostname) >= 0)) {
+    backBar.style.display = '';
+    if (backTo) {
+      backBar.querySelector('button').onclick = function() {
+        sessionStorage.removeItem('haq_back_to');
+        window.location.href = backTo;
+      };
+    }
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO BAND
+═══════════════════════════════════════════════════════ -->
+<section class="page-hero-band" aria-label="{{ scheme.name }}">
+  <div class="wrap page-hero-inner">
+
+    <!-- Breadcrumb -->
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ lp }}/yojana">{{ t('nav.all_schemes') }}</a>
+      {% if cat_slug %}
+      <span aria-hidden="true">{% if lang_code in ['ur','ks','sd'] %} ‹ {% else %} › {% endif %}</span>
+      <a href="{{ lp }}/yojana/{{ cat }}">{{ t('cat.' + cat_slug) }}</a>
+      {% endif %}
+      <span aria-hidden="true">{% if lang_code in ['ur','ks','sd'] %} ‹ {% else %} › {% endif %}</span>
+      <span aria-current="page">{{ scheme.short_title or scheme.name }}</span>
+    </nav>
+
+    <!-- Level badge -->
+    <div style="display:flex;gap:var(--s2);flex-wrap:wrap;margin-bottom:var(--s3)">
+      <span class="scheme-level-badge scheme-level-{{ (scheme.level or 'Central') | lower }}">
+        {{ scheme.level or 'Central' }}
+      </span>
+      {% if scheme.state and scheme.state != 'All' %}
+      <span class="scheme-state-badge">{{ scheme.state }}</span>
+      {% endif %}
+      {% if scheme.benefit_type %}
+      <span class="scheme-type-badge">{{ scheme.benefit_type | replace('_',' ') | title }}</span>
+      {% endif %}
+    </div>
+
+    <h1 class="page-hero-h1">{{ scheme.name }}</h1>
+    {% if scheme.implementing_agency %}
+    <p class="page-hero-sub">{{ scheme.implementing_agency }}</p>
+    {% elif scheme.ministry %}
+    <p class="page-hero-sub">{{ scheme.ministry }}</p>
+    {% endif %}
+
+    <a href="{{ scheme.apply_url or 'https://www.myscheme.gov.in' }}"
+       class="btn btn-saffron btn-lg" target="_blank" rel="noopener"
+       aria-label="{{ t('scheme.apply') }} (नई विंडो में खुलेगा)"
+       style="margin-top:var(--s5);display:inline-flex;align-items:center;gap:6px">
+      {{ t('scheme.apply') }}
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14" aria-hidden="true">
+        <path d="M2 12L12 2M12 2H5M12 2v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </a>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTENT GRID
+═══════════════════════════════════════════════════════ -->
+<div class="wrap scheme-detail-wrap">
+
+  <!-- ── Main column ─────────────────────────────────────── -->
+  <div class="scheme-detail-main">
+
+    <!-- Description -->
+    <section class="scheme-section" aria-labelledby="desc-heading">
+      <h2 class="scheme-section-h" id="desc-heading">{{ t('about_this_scheme') }}</h2>
+      <div class="scheme-desc">
+        {% if lang_code != 'en' and scheme._description_translated %}
+          <p class="scheme-desc-native">{{ scheme.description }}</p>
+        {% elif scheme.detailed_description_md %}
+          <div class="scheme-rich-md">{{ scheme.detailed_description_md }}</div>
+        {% elif scheme.description %}
+          <p>{{ scheme.description }}</p>
+        {% endif %}
+      </div>
+    </section>
+
+    {% if guide %}
+    <!-- ── Rich Guide (pre-generated, server-rendered) ── -->
+    <section class="scheme-section scheme-guide-section" aria-labelledby="guide-heading">
+      <h2 class="scheme-section-h" id="guide-heading">
+        <span class="guide-badge" aria-hidden="true">★</span>
+        {{ t('practical_guide') }}
+        {% if lang_code not in ['hi', 'en', 'mr', 'ne', 'mai', 'kok', 'doi', 'sa'] %}
+        <span style="font-size:12px;font-weight:500;color:var(--ink-3);margin-left:8px">(हिंदी में / in Hindi)</span>
+        {% endif %}
+      </h2>
+
+      {% if guide.how_to_apply %}
+      <div class="guide-block">
+        <h3 class="guide-sub">{{ t('how_to_apply') }}</h3>
+
+        <!-- Visual Apply Flow Diagram — dynamic from guide steps -->
+        <div class="apply-flow" aria-hidden="true">
+          {% for step in guide.how_to_apply %}
+          <div class="af-node{{ ' af-node--done' if loop.last else '' }}">
+            <div class="af-dot{{ ' af-dot--done' if loop.last else '' }}">{{ '✓' if loop.last else loop.index }}</div>
+            <div class="af-label">{{ step.title | truncate(14, True, '') }}</div>
+          </div>
+          {% if not loop.last %}<div class="af-conn"></div>{% endif %}
+          {% endfor %}
+        </div>
+
+        <ol class="guide-steps">
+          {% for step in guide.how_to_apply %}
+          <li class="guide-step">
+            <div class="guide-step-title">{{ step.title }}</div>
+            <div class="guide-step-detail">{{ step.detail }}</div>
+          </li>
+          {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+
+      {% if guide.use_case %}
+      {% set u = guide.use_case %}
+      <div class="guide-block guide-story-block">
+        <h3 class="guide-sub">{{ t('reallife_example') }}</h3>
+        <div class="guide-story">
+          <div class="guide-story-avatar" aria-hidden="true">{{ (u.name or '?')[0] }}</div>
+          <div class="guide-story-body">
+            <div class="guide-story-meta">
+              {{ u.name or '' }}
+              {% if u.age %}&nbsp;·&nbsp;{{ u.age }}{{ t('yrs') }}{% endif %}
+              {% if u.occupation %}&nbsp;·&nbsp;{{ u.occupation }}{% endif %}
+              {% if u.state %}&nbsp;·&nbsp;{{ u.state }}{% endif %}
+            </div>
+            <p class="guide-story-text">{{ u.story or '' }}</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if guide.tips %}
+      <div class="guide-block">
+        <h3 class="guide-sub">{{ t('pro_tips') }}</h3>
+        <ul class="guide-tips">
+          {% for tip in guide.tips %}<li>{{ tip }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if guide.common_mistakes %}
+      <div class="guide-block guide-mistakes-block">
+        <h3 class="guide-sub">{{ t('common_mistakes_to_avoid') }}</h3>
+        <ul class="guide-mistakes">
+          {% for m in guide.common_mistakes %}<li>{{ m }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+    </section>
+    {% endif %}
+
+    <!-- Eligibility -->
+    <section class="scheme-section" aria-labelledby="elig-heading">
+      <h2 class="scheme-section-h" id="elig-heading">पात्रता (Eligibility)</h2>
+
+      <ul class="scheme-elig-list">
+
+        {% if scheme.genders and scheme.genders | length > 0 %}
+        <li>
+          <span class="elig-label">लिंग</span>
+          <span class="elig-val">{{ scheme.genders | join(', ') }}</span>
+        </li>
+        {% endif %}
+
+        {% if scheme.age_min or scheme.age_max %}
+        <li>
+          <span class="elig-label">आयु सीमा</span>
+          <span class="elig-val">
+            {% if scheme.age_min and scheme.age_max %}{{ scheme.age_min }} – {{ scheme.age_max }} वर्ष
+            {% elif scheme.age_min %}{{ scheme.age_min }}+ वर्ष
+            {% elif scheme.age_max %}{{ scheme.age_max }} वर्ष तक{% endif %}
+          </span>
+        </li>
+        {% endif %}
+
+        {% if scheme.income_limit_annual_inr %}
+        <li>
+          <span class="elig-label">आय सीमा</span>
+          <span class="elig-val">₹{{ '{:,}'.format(scheme.income_limit_annual_inr) }} प्रति वर्ष</span>
+        </li>
+        {% elif scheme.max_income_lakhs %}
+        <li>
+          <span class="elig-label">आय सीमा</span>
+          <span class="elig-val">₹{{ scheme.max_income_lakhs }} लाख प्रति वर्ष</span>
+        </li>
+        {% endif %}
+
+        {% if scheme.beneficiary_type and scheme.beneficiary_type | length > 0 %}
+        <li>
+          <span class="elig-label">लाभार्थी</span>
+          <span class="elig-val">
+            {%- if lang_code == 'en' -%}
+              {{ scheme.beneficiary_type | join(', ') | replace('_',' ') | title }}
+            {%- else -%}
+              {%- for bt in scheme.beneficiary_type -%}
+                {{ BTYPE_HI[bt] if bt in BTYPE_HI else bt | replace('_',' ') | title }}{% if not loop.last %}, {% endif %}
+              {%- endfor -%}
+            {%- endif -%}
+          </span>
+        </li>
+        {% endif %}
+
+        {% if scheme.caste_categories and scheme.caste_categories | length > 0 %}
+        <li>
+          <span class="elig-label">जाति</span>
+          <span class="elig-val">{{ scheme.caste_categories | join(', ') }}</span>
+        </li>
+        {% endif %}
+
+        {% if scheme.residence_type %}
+        <li>
+          <span class="elig-label">निवास</span>
+          <span class="elig-val">{{ scheme.residence_type | replace('_',' ') | title }}</span>
+        </li>
+        {% endif %}
+
+        {% if scheme.for_widow %}<li><span class="elig-chip">विधवा</span></li>{% endif %}
+        {% if scheme.for_pregnant %}<li><span class="elig-chip">गर्भवती/स्तनपान</span></li>{% endif %}
+        {% if scheme.for_shg %}<li><span class="elig-chip">SHG सदस्य</span></li>{% endif %}
+        {% if scheme.for_girl_child %}<li><span class="elig-chip">बालिका</span></li>{% endif %}
+        {% if scheme.for_sc_st %}<li><span class="elig-chip">SC/ST/OBC</span></li>{% endif %}
+        {% if scheme.for_minority %}<li><span class="elig-chip">अल्पसंख्यक</span></li>{% endif %}
+        {% if scheme.disability_required %}<li><span class="elig-chip">दिव्यांगता</span></li>{% endif %}
+
+        {% set _et = scheme.eligibility_text_translated or '' %}
+        {% if _et | length > 60
+             and 'विवरण देखें' not in _et
+             and 'see details' not in _et | lower
+             and 'view details' not in _et | lower %}
+        <li class="elig-full-text">{{ _et }}</li>
+        {% endif %}
+
+      </ul>
+
+      {% if scheme.eligibility_md and (lang_code == 'en' or not scheme.eligibility_text_translated) %}
+      <div class="scheme-rich-md scheme-elig-md">{{ scheme.eligibility_md }}</div>
+      {% endif %}
+
+    </section>
+
+    <!-- Key Eligibility Q&A -->
+    {% if scheme.key_eligibility_questions and scheme.key_eligibility_questions | length > 0 %}
+    <section class="scheme-section" aria-labelledby="key-elig-heading">
+      <h2 class="scheme-section-h" id="key-elig-heading">{{ t('eligibility_qampa') }}</h2>
+      <div class="key-elig-qna">
+        {% for item in scheme.key_eligibility_questions %}
+        <details class="key-elig-item">
+          <summary class="key-elig-q">{{ item.q }}</summary>
+          <div class="key-elig-a">{{ item.a }}</div>
+        </details>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Benefit -->
+    {% if scheme.benefit_type or scheme.benefit_amount_description or scheme.benefit_amount_inr or scheme.benefit_amount_percent %}
+    <section class="scheme-section" aria-labelledby="benefit-heading">
+      <h2 class="scheme-section-h" id="benefit-heading">{{ t('scheme.benefits_heading') }}</h2>
+      <div class="scheme-benefit-box">
+        {% if scheme.benefit_amount_inr %}
+        <div class="benefit-amount">₹{{ '{:,}'.format(scheme.benefit_amount_inr | int) }}</div>
+        {% elif scheme.benefit_amount_percent %}
+        <div class="benefit-amount">{{ scheme.benefit_amount_percent }}%</div>
+        {% endif %}
+        {% if scheme.benefit_type %}
+        <div class="benefit-type">{{ scheme.benefit_type | replace('_',' ') | title }}</div>
+        {% endif %}
+        {% if scheme.benefit_text_translated %}
+        <p class="benefit-desc">{{ scheme.benefit_text_translated }}</p>
+        {% elif scheme.benefit_amount_description %}
+        <p class="benefit-desc">{{ scheme.benefit_amount_description }}</p>
+        {% endif %}
+        {% if scheme.benefits_md and (lang_code == 'en' or not scheme.benefit_text_translated) %}
+        <div class="scheme-rich-md scheme-benefits-md">{{ scheme.benefits_md }}</div>
+        {% endif %}
+      </div>
+    </section>
+    {% elif scheme.benefits_md %}
+    <section class="scheme-section" aria-labelledby="benefit-heading">
+      <h2 class="scheme-section-h" id="benefit-heading">{{ t('scheme.benefits_heading') }}</h2>
+      <div class="scheme-benefit-box">
+        <div class="scheme-rich-md scheme-benefits-md">{{ scheme.benefits_md }}</div>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Documents -->
+    {% if scheme.documents_list and scheme.documents_list | length > 0 %}
+    <section class="scheme-section" aria-labelledby="docs-heading">
+      <h2 class="scheme-section-h" id="docs-heading">आवश्यक दस्तावेज़</h2>
+      <ul class="scheme-docs-list">
+        {% for doc in scheme.documents_list %}
+        <li>{{ doc }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    <!-- Application Process (from MyScheme API) -->
+    {% if scheme.application_process_md and not guide %}
+    <section class="scheme-section" aria-labelledby="apply-heading">
+      <h2 class="scheme-section-h" id="apply-heading">आवेदन प्रक्रिया</h2>
+      <div class="scheme-rich-md">{{ scheme.application_process_md }}</div>
+    </section>
+    {% endif %}
+
+    <!-- FAQs from MyScheme -->
+    {% if scheme.faqs_list and scheme.faqs_list | length > 0 %}
+    <section class="scheme-section scheme-faqs-section" aria-labelledby="faq-heading">
+      <h2 class="scheme-section-h" id="faq-heading">अक्सर पूछे जाने वाले सवाल</h2>
+      <div class="scheme-faq-list">
+        {% for faq in scheme.faqs_list %}
+        <details class="scheme-faq-item">
+          <summary class="scheme-faq-q">{{ faq.q }}</summary>
+          <div class="scheme-faq-a scheme-rich-md">{{ faq.a }}</div>
+        </details>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Tags -->
+    {% if scheme.tags and scheme.tags | length > 0 %}
+    <div class="scheme-tags" aria-label="Tags">
+      {% for tag in scheme.tags %}
+      <span class="scheme-tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Data source attribution -->
+    <p class="scheme-source-note">
+      डेटा स्रोत:
+      <a href="https://www.myscheme.gov.in/schemes/{{ scheme.slug }}" target="_blank" rel="noopener">MyScheme.gov.in</a>
+      (भारत सरकार का आधिकारिक पोर्टल)
+      &nbsp;·&nbsp;
+      <a href="mailto:hello@aarambhax.in?subject=Correction: {{ scheme.name | urlencode }}" class="scheme-report-link">जानकारी गलत है?</a>
+    </p>
+
+    <!-- Apply CTA -->
+    <div class="scheme-apply-cta">
+      <a href="{{ scheme.apply_url or 'https://www.myscheme.gov.in' }}"
+         class="btn btn-saffron btn-lg" target="_blank" rel="noopener"
+         aria-label="{{ t('scheme.apply') }} (नई विंडो में खुलेगा)">
+        {{ t('scheme.apply') }}
+        <svg width="14" height="14" fill="none" viewBox="0 0 14 14" aria-hidden="true">
+          <path d="M2 12L12 2M12 2H5M12 2v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a href="{{ lp }}/check" class="btn btn-outline-navy btn-lg">
+        {{ t('scheme.check_eligibility') }}
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="scheme-detail-sidebar" aria-label="Scheme info">
+
+    <!-- Quick info card -->
+    <div class="scheme-info-card">
+      <h3 class="sic-heading">योजना की जानकारी</h3>
+      <dl class="sic-list">
+        {% if scheme.level %}
+        <div class="sic-row">
+          <dt>स्तर</dt>
+          <dd>{{ scheme.level }}</dd>
+        </div>
+        {% endif %}
+        {% if scheme.state and scheme.state != 'All' %}
+        <div class="sic-row">
+          <dt>राज्य</dt>
+          <dd>{{ scheme.state }}</dd>
+        </div>
+        {% endif %}
+        {% if scheme.ministry %}
+        <div class="sic-row">
+          <dt>मंत्रालय</dt>
+          <dd>{{ scheme.ministry }}</dd>
+        </div>
+        {% endif %}
+        {% if scheme.employment_status %}
+        <div class="sic-row">
+          <dt>रोजगार</dt>
+          <dd>{{ scheme.employment_status | replace('_',' ') | title }}</dd>
+        </div>
+        {% endif %}
+        {% if scheme.streams and scheme.streams | length > 0 %}
+        <div class="sic-row">
+          <dt>स्ट्रीम</dt>
+          <dd>{{ scheme.streams | join(', ') }}</dd>
+        </div>
+        {% endif %}
+        {% if scheme.min_class or scheme.max_class %}
+        <div class="sic-row">
+          <dt>कक्षा</dt>
+          <dd>
+            {% if scheme.min_class and scheme.max_class %}{{ scheme.min_class }} – {{ scheme.max_class }}
+            {% elif scheme.min_class %}{{ scheme.min_class }}+
+            {% elif scheme.max_class %}{{ scheme.max_class }} तक{% endif %}
+          </dd>
+        </div>
+        {% endif %}
+      </dl>
+      <a href="{{ scheme.apply_url or 'https://www.myscheme.gov.in' }}"
+         class="btn btn-saffron" target="_blank" rel="noopener"
+         aria-label="{{ t('scheme.apply') }} (नई विंडो में खुलेगा)"
+         style="width:100%;text-align:center;margin-top:var(--s4)">
+        {{ t('scheme.apply') }} →
+      </a>
+    </div>
+
+    <!-- Check your eligibility -->
+    <div class="scheme-check-card">
+      <p>क्या आप इस योजना के पात्र हैं?</p>
+      <a href="{{ lp }}/check" class="btn btn-outline-navy" style="width:100%;text-align:center">
+        पात्रता जाँचें →
+      </a>
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     RELATED SCHEMES
+═══════════════════════════════════════════════════════ -->
+{% if related %}
+<section class="scheme-related" aria-labelledby="related-heading">
+  <div class="wrap">
+    <h2 id="related-heading" class="scheme-section-h">मिलती-जुलती योजनाएं</h2>
+    <div class="scheme-cards-grid">
+      {% for s in related %}
+      <a href="{{ lp }}/yojana/s/{{ s.slug }}" class="scheme-card" aria-label="{{ s.name }}">
+        <div class="sc-level sc-level-{{ (s.level or 'Central') | lower }}">{{ s.level or 'Central' }}</div>
+        <h3 class="sc-name">{{ s.name }}</h3>
+        {% if s.description %}
+        <p class="sc-desc">{{ s.description | truncate(90) }}</p>
+        {% endif %}
+        <span class="sc-apply">{{ t('scheme.view') }} →</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
